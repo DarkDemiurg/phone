@@ -1,9 +1,14 @@
 """Main module."""
 
 import atexit
+import time
 
 import pjsua2 as pj  # type: ignore
+from icecream import install
 from loguru import logger
+from phone_account import PhoneAccount
+
+install()
 
 logger.add("/tmp/phone_app.log", rotation="1 MB")
 
@@ -17,6 +22,8 @@ class PhoneApp:
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
+
+        self.__create_accounts()
 
     def __create_lib(self):
         self.ep = pj.Endpoint()
@@ -45,6 +52,9 @@ class PhoneApp:
 
     def __create_log_config(self):
         self.log_cfg = pj.LogConfig()
+        # self.log_cfg.filename = "/tmp/pjsip.log"
+        self.log_cfg.level = 1
+        self.log_cfg.consoleLevel = 1
         self.ep_cfg.logConfig = self.log_cfg
 
     def __create_endpoint_config(self):
@@ -59,7 +69,21 @@ class PhoneApp:
         self.tr.port = 5060
         self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.tr)
 
+    def __create_accounts(self):
+        self.accounts = []
+        acc = PhoneAccount(self, "0036109", "", "sip.novofon.ru")
+        self.accounts.append(acc)
+
+    @property
+    def call_allowed(self):
+        return True
+
 
 if __name__ == "__main__":
-    pa = PhoneApp()
-    pass
+    app = PhoneApp()
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass

@@ -1,24 +1,50 @@
 import pjsua2 as pj
 from loguru import logger
+from phone_call import PhoneCall
 
 
 class PhoneAccount(pj.Account):
-    def __init__(self):
-        pass
+    def __init__(self, app, username: str, password: str, server: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        self.username = username
+        self.password = password
+        self.server = server
 
-    def onIncomingCall(self, prm):
-        # Call *call = new MyCall(*this, iprm.callId);
-        # // Just hangup for now
-        # CallOpParam op;
-        # op.statusCode = PJSIP_SC_DECLINE;
-        # call->hangup(op);
-        # // And delete the call
-        # delete call;
+        self.__create()
 
-        return super().onIncomingCall(prm)
+    def __create(self):
+        self.cfg = pj.AccountConfig()
+        self.cfg.idUri = f"sip:{self.username}@{self.server}"
+        self.cfg.regConfig.registrarUri = f"sip:{self.server}"
 
-    def onRegState(self, prm: pj.OnRegStateParam):
+        cred = pj.AuthCredInfo("digest", "*", self.username, 0, self.password)
+        self.cfg.sipConfig.authCreds.append(cred)
+
+        self.create(self.cfg)
+
+    def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
+        # logger.debug(f'{call_prm.callId=} {call_prm.rdata=}')
+
+        phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
+
+        if not self.app.call_allowed:
+            phone_call.decline()
+        else:
+            phone_call.accept()
+
+        del phone_call
+
+        return super().onIncomingCall(call_prm)
+
+    def onRegState(self, reg_prm: pj.OnRegStateParam):
+        # logger.debug(f'{reg_prm.status=} {reg_prm.code=} {reg_prm.reason=} {reg_prm.rdata=} {reg_prm.expiration=}')
+
         ai: pj.AccountInfo = self.getInfo()
-        msg = f"{'*** Register: code=' if ai.regIsActive else '*** Unregister: code='} {prm.code}"
-        logger.debug(msg)
-        return super().onRegState(prm)
+        # logger.debug(
+        #     f"{ai.id=} {ai.isDefault=} {ai.uri=} {ai.regIsConfigured=} {ai.regIsActive=} {ai.regExpiresSec=} "
+        #     f"{ai.regStatus=} {ai.regStatusText=} {ai.regLastErr=} {ai.onlineStatus=} {ai.onlineStatusText=}"
+        # )
+        logger.debug(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
+
+        return super().onRegState(reg_prm)
