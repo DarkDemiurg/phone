@@ -33,10 +33,6 @@ class PhoneAccount(pj.Account):
         else:
             phone_call.accept()
 
-        del phone_call
-
-        return super().onIncomingCall(call_prm)
-
     def onRegState(self, reg_prm: pj.OnRegStateParam):
         # logger.debug(f'{reg_prm.status=} {reg_prm.code=} {reg_prm.reason=} {reg_prm.rdata=} {reg_prm.expiration=}')
 
@@ -48,3 +44,13 @@ class PhoneAccount(pj.Account):
         logger.debug(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
 
         return super().onRegState(reg_prm)
+
+    def make_call(self, number: str):
+        logger.debug(f"[{self.username}{self.server}] New outgoing call to: {number}")
+        phone_call = PhoneCall(self)
+        prm = pj.CallOpParam(True)
+        try:
+            dest_uri = f"sip:{number}@{self.server}"
+            phone_call.makeCall(dest_uri, prm)
+        except pj.Error as pjerr:
+            logger.error(pjerr.info())

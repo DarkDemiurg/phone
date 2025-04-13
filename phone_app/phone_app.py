@@ -7,6 +7,7 @@ import pjsua2 as pj  # type: ignore
 from icecream import install
 from loguru import logger
 from phone_account import PhoneAccount
+from tools import get_user_agent
 
 install()
 
@@ -47,14 +48,14 @@ class PhoneApp:
 
     def __create_ua_config(self):
         self.ua_cfg = pj.UaConfig()
-
+        self.ua_cfg.userAgent = get_user_agent()
         self.ep_cfg.uaConfig = self.ua_cfg
 
     def __create_log_config(self):
         self.log_cfg = pj.LogConfig()
         # self.log_cfg.filename = "/tmp/pjsip.log"
-        self.log_cfg.level = 1
-        self.log_cfg.consoleLevel = 1
+        self.log_cfg.level = 3
+        self.log_cfg.consoleLevel = 3
         self.ep_cfg.logConfig = self.log_cfg
 
     def __create_endpoint_config(self):
@@ -71,17 +72,29 @@ class PhoneApp:
 
     def __create_accounts(self):
         self.accounts = []
-        acc = PhoneAccount(self, "0036109", "", "sip.novofon.ru")
+        acc = PhoneAccount(self, "0036109", "_hume4yNkK", "sip.novofon.ru")
         self.accounts.append(acc)
 
     @property
     def call_allowed(self):
         return True
 
+    def make_call(self, number: str):
+        logger.debug(f"[PHONE_APP] New outgoing call to: {number}")
+        self.__choose_account(number).make_call(number)
+
+    def __choose_account(self, number: str) -> PhoneAccount:
+        return self.accounts[0]  # TODO: implement stub for multiple accounts
+
 
 if __name__ == "__main__":
     app = PhoneApp()
 
+    for d in app.ep.audDevManager().enumDev2():
+        p: pj.AudioDevInfo = d
+        print(p.name)
+
+    app.make_call("0036111")
     try:
         while True:
             time.sleep(1)
