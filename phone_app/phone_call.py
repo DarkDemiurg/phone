@@ -45,8 +45,7 @@ class PhoneCall(pj.Call):
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
                 pass
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
-                # self.app.calls.remove(self)
-                pass
+                self.account.remove_call(self)
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 
@@ -78,7 +77,6 @@ class PhoneCall(pj.Call):
                     self.onhold = False
 
     def accept(self):
-        breakpoint()
         try:
             prm = pj.CallOpParam()
             prm.statusCode = 200

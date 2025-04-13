@@ -4,6 +4,7 @@ import atexit
 import time
 
 import pjsua2 as pj  # type: ignore
+from const import LOG_LEVEL
 from icecream import install
 from loguru import logger
 from phone_account import PhoneAccount
@@ -55,8 +56,8 @@ class PhoneApp:
     def __create_log_config(self):
         self.log_cfg = pj.LogConfig()
         # self.log_cfg.filename = "/tmp/pjsip.log"
-        self.log_cfg.level = 3
-        self.log_cfg.consoleLevel = 3
+        self.log_cfg.level = LOG_LEVEL
+        self.log_cfg.consoleLevel = LOG_LEVEL
         self.ep_cfg.logConfig = self.log_cfg
 
     def __create_endpoint_config(self):
@@ -96,6 +97,8 @@ if __name__ == "__main__":
     #     print(p.name)
 
     # app.make_call("5006")
+    # app.make_call("0036111")
+
     try:
         while True:
             time.sleep(1)
