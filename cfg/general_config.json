@@ -146,7 +146,7 @@
                     "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
                     "Number": "tel5",
                     "PinName": "Q6",
-                    "Action": "Call"
+                    "Action": "Answer"
                 },
                 "6": {
                     "Annotation": "телефон 6",

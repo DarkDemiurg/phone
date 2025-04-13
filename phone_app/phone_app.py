@@ -99,6 +99,9 @@ if __name__ == "__main__":
     # app.make_call("5006")
     # app.make_call("0036111")
 
+    for t in app.cfg.triggers_input:
+        print(t)
+
     try:
         while True:
             time.sleep(1)

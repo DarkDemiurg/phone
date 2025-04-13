@@ -1,4 +1,5 @@
 import json
+from enum import StrEnum
 
 from const import GENERAL_CONFIG, OS_RELEASE
 
@@ -23,9 +24,28 @@ def get_user_agent():
     return f"{model}/{build_time}"
 
 
+class Actions(StrEnum):
+    Call = "Call"
+    Answer = "Answer"
+    Mute = "Mute"
+
+
+class TriggerInput:
+    def __init__(self, idx: str, number: str, pin_name: str, action: str):
+        self.idx: str = idx  # = "1"
+        # self.annotation: str #= "телефон 1",
+        # self.audio_interface_link: str #= "Device.Voip.AudioInterfaces.1."
+        # self.duration: int #= 0
+        # self.line_link: str #= "Device.Voip.VoiceProfile.1.Line.1."
+        self.number: str = number  # = "tel1"
+        self.pin_name: str = pin_name  # = "Q2"
+        self.action: Actions = Actions[action]  # = "Call"
+
+
 class Config:
     _instance = None
     _cfg: dict = {}
+    _triggers_input: list[TriggerInput]
 
     def __new__(cls):
         if cls._instance is None:
@@ -39,9 +59,20 @@ class Config:
         self._load_config()
         self._initialized = True
 
+    def _load_triggers_input(self):
+        self._triggers_input = []
+
+        for idx in self._cfg["Device"]["Voip"]["TriggersInput"]:
+            v = self._cfg["Device"]["Voip"]["TriggersInput"][idx]
+            tr = TriggerInput(
+                idx=idx, number=v["Number"], pin_name=v["PinName"], action=v["Action"]
+            )
+            self._triggers_input.append(tr)
+
     def _load_config(self):
         with open(GENERAL_CONFIG) as f:
             self._cfg = json.load(f)
+        self._load_triggers_input()
 
     def reload_config(self):
         self._load_config()
@@ -93,3 +124,7 @@ class Config:
         return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["SIP"][
             "ProxyServerPort"
         ]
+
+    @property
+    def triggers_input(self) -> list[TriggerInput]:
+        return self._triggers_input
