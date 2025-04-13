@@ -1,0 +1,279 @@
+{
+    "Device": {
+        "Audio": {
+            "Input": {
+                "1": {
+                    "Volume": 100
+                }
+            },
+            "Output": {
+                "1": {
+                    "Volume": 75
+                }
+            }
+        },
+        "DatamodelVersion": 11,
+        "Multicast": {
+            "1": {
+                "Enable": true,
+                "URL": "rtp://@224.0.0.1:10000"
+            },
+            "2": {
+                "Enable": false,
+                "URL": ""
+            },
+            "3": {
+                "Enable": false,
+                "URL": ""
+            },
+            "4": {
+                "Enable": false,
+                "URL": ""
+            },
+            "5": {
+                "Enable": false,
+                "URL": ""
+            }
+        },
+        "NTP": {
+            "Enable": true,
+            "Servers": {
+                "1": "0.pool.ntp.org",
+                "2": "1.pool.ntp.org"
+            }
+        },
+        "Network": {
+            "ConnectionType": "DHCP",
+            "DNS1": "192.168.1.1",
+            "DNS2": "0.0.0.0",
+            "Gateway": "192.168.1.1",
+            "IPAddress": "192.168.1.148",
+            "InterfaceName": "eth0",
+            "MacAddress": "98:43:DA:00:00:03",
+            "NetMask": "255.255.255.0"
+        },
+        "Syslog": {
+            "Level": "error",
+            "Port": 514,
+            "Server": "0.0.0.0",
+            "Transport": "TCP"
+        },
+        "Voip": {
+            "AudioInterfaces": {
+                "1": {
+                    "In": {
+                        "Channel": 2,
+                        "Device": "pcm_int",
+                        "Volume": 100
+                    },
+                    "Out": {
+                        "Channel": 2,
+                        "Device": "pcm_int",
+                        "Volume": 50
+                    },
+                    "VoicePinName": "G1"
+                }
+            },
+            "GPIOServerSocket": "/var/run/gpio-server.socket",
+            "TriggersInput": {
+                "1": {
+                    "Annotation": "телефон 1",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel1",
+                    "PinName": "Q2",
+                    "Action": "Call"
+                },
+                "10": {
+                    "Annotation": "телефон 10",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel10",
+                    "PinName": "Q11",
+                    "Action": "Call"
+                },
+                "11": {
+                    "Annotation": "телефон 11",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel11",
+                    "PinName": "Q12",
+                    "Action": "Call"
+                },
+                "12": {
+                    "Annotation": "телефон 12",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel12",
+                    "PinName": "Q13",
+                    "Action": "Call"
+                },
+                "2": {
+                    "Annotation": "телефон 2",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel2",
+                    "PinName": "Q3",
+                    "Action": "Call"
+                },
+                "3": {
+                    "Annotation": "телефон 3",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel3",
+                    "PinName": "Q4",
+                    "Action": "Call"
+                },
+                "4": {
+                    "Annotation": "телефон 4",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel4",
+                    "PinName": "Q5",
+                    "Action": "Call"
+                },
+                "5": {
+                    "Annotation": "телефон 5",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel5",
+                    "PinName": "Q6",
+                    "Action": "Call"
+                },
+                "6": {
+                    "Annotation": "телефон 6",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel6",
+                    "PinName": "Q7",
+                    "Action": "Call"
+                },
+                "7": {
+                    "Annotation": "телефон 7",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel7",
+                    "PinName": "Q8",
+                    "Action": "Call"
+                },
+                "8": {
+                    "Annotation": "телефон 8",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel8",
+                    "PinName": "Q9",
+                    "Action": "Call"
+                },
+                "9": {
+                    "Annotation": "телефон 9",
+                    "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                    "Duration": 0,
+                    "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
+                    "Number": "tel9",
+                    "PinName": "Q10",
+                    "Action": "Call"
+                }
+            },
+            "TriggersOutput": [],
+            "UserAgentIP": "",
+            "VoiceProfile": {
+                "1": {
+                    "Codec": {
+                        "1": {
+                            "Enable": true,
+                            "Name": "G.711MuLaw"
+                        },
+                        "2": {
+                            "Enable": true,
+                            "Name": "G.711ALaw"
+                        },
+                        "3": {
+                            "Enable": true,
+                            "Name": "G.722"
+                        },
+                        "4": {
+                            "Enable": true,
+                            "Name": "OPUS"
+                        },
+                        "PacketizationPeriod": "20",
+                        "order": [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ]
+                    },
+                    "Enable": "Enabled",
+                    "Line": {
+                        "1": {
+                            "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                            "AutoAnswerEnable": true,
+                            "AutoAnswerTime": 0,
+                            "DirectoryNumber": "5000",
+                            "Enable": "Enabled",
+                            "SIP": {
+                                "AuthPassword": "_hume4yNkK",
+                                "AuthUserName": "0036109"
+                            },
+                            "TriggersOutputLinks": {
+                                "1": "Device.Voip.TriggersOutput.1."
+                            }
+                        }
+                    },
+                    "NATFeatures": {
+                        "KeepAliveInterval": 60
+                    },
+                    "NATPublic": {
+                        "NATPublicEnable": false,
+                        "NATPublicIP": "0.0.0.0",
+                        "NATPublicPort": 5060
+                    },
+                    "RPortEnable": true,
+                    "RTP": {
+                        "DSCPMark": 0,
+                        "LocalPortMax": 9200,
+                        "LocalPortMin": 9100
+                    },
+                    "SIP": {
+                        "BackupOutboundPort": 5060,
+                        "BackupOutboundProxy": "",
+                        "BackupProxy": "",
+                        "BackupProxyPort": 5060,
+                        "BackupUserAgentPort": 5080,
+                        "DSCPMark": 0,
+                        "OutboundPort": 5060,
+                        "OutboundProxy": "",
+                        "ProxyServer": "sip.novofon.ru",
+                        "ProxyServerPort": 5060,
+                        "ProxyServerTransport": "UDP",
+                        "ReInviteExpires": 180,
+                        "RegisterExpires": 130,
+                        "SessionRefresher": "auto",
+                        "TLSPemFilePath": "",
+                        "UserAgent": "eXoVoIP",
+                        "UserAgentDomain": "",
+                        "UserAgentPort": 5060
+                    },
+                    "STUNEnable": false,
+                    "STUNPort": 3478,
+                    "STUNServer": "stun.sipnet.ru"
+                }
+            }
+        },
+        "WebAuth": {
+            "Login": "admin",
+            "Password": "123456"
+        }
+    }
+}

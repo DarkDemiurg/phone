@@ -7,7 +7,7 @@ import pjsua2 as pj  # type: ignore
 from icecream import install
 from loguru import logger
 from phone_account import PhoneAccount
-from tools import get_user_agent
+from tools import Config, get_user_agent
 
 install()
 
@@ -20,6 +20,7 @@ class PhoneApp:
         atexit.register(self.__destroy)
 
     def __init(self):
+        self.cfg = Config()
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
@@ -67,12 +68,12 @@ class PhoneApp:
 
     def __create_transport(self):
         self.tr = pj.TransportConfig()
-        self.tr.port = 5060
+        self.tr.port = self.cfg.proxy_server_port
         self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.tr)
 
     def __create_accounts(self):
         self.accounts = []
-        acc = PhoneAccount(self, "0036109", "_hume4yNkK", "sip.novofon.ru")
+        acc = PhoneAccount(self, self.cfg.username, self.cfg.password, self.cfg.server)
         self.accounts.append(acc)
 
     @property
@@ -90,11 +91,11 @@ class PhoneApp:
 if __name__ == "__main__":
     app = PhoneApp()
 
-    for d in app.ep.audDevManager().enumDev2():
-        p: pj.AudioDevInfo = d
-        print(p.name)
+    # for d in app.ep.audDevManager().enumDev2():
+    #     p: pj.AudioDevInfo = d
+    #     print(p.name)
 
-    app.make_call("0036111")
+    # app.make_call("5006")
     try:
         while True:
             time.sleep(1)

@@ -10,7 +10,7 @@ class PhoneAccount(pj.Account):
         self.username = username
         self.password = password
         self.server = server
-
+        self.calls: list[PhoneCall] = []
         self.__create()
 
     def __create(self):
@@ -52,5 +52,6 @@ class PhoneAccount(pj.Account):
         try:
             dest_uri = f"sip:{number}@{self.server}"
             phone_call.makeCall(dest_uri, prm)
+            self.calls.append(phone_call)
         except pj.Error as pjerr:
             logger.error(pjerr.info())
