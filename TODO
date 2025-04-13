@@ -3,3 +3,5 @@
 3. Загрузка конфига
 4. Перезагрузка конфига
 5. VoicePinName - включать динамик при вызове и отключать после
+
+./configure --disable-static --enable-shared --disable-ilbc-codec --disable-l16-codec --disable-ipp --disable-silk --enable-libwebrtc-aec3 --enable-sound --disable-bcg729 --disable-gsm-codec --disable-openh264 --with-ssl --disable-libsamplerate --disable-libsrtp --disable-upnp --disable-v4l2 --disable-libyuv --disable-opencore-amr --without-external-pa --disable-sdl --disable-speex-aec --disable-speex-codec --enable-libuuid  --disable-video
