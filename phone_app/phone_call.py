@@ -16,6 +16,7 @@ class PhoneCall(pj.Call):
         self.connected = False
         self.onhold = False
         self.call_id = call_id
+        self._muted = False
 
     def onCallState(self, cs_prm: pj.OnCallStateParam):
         # sip_event: pj.SipEvent = cs_prm.e
@@ -114,3 +115,33 @@ class PhoneCall(pj.Call):
             super().hangup(op)
         except Exception as e:
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
+
+    def TxMute(self, mute: bool):
+        am = None
+        ci = self.getInfo()
+        for mi in ci.media:
+            if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
+                mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
+                or mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
+            ):
+                m = self.getMedia(mi.index)
+                am = pj.AudioMedia.typecastFromMedia(m)
+
+        if am is None:
+            logger.error("AudioMedia not found")
+            return
+
+        if mute:
+            self.account.app.ep.audDevManager().getCaptureDevMedia().stopTransmit(am)
+            self._muted = True
+        else:
+            self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(am)
+            self._muted = False
+
+        logger.debug(
+            f"[{self.call_id}] mute = {mute}: {ROLE_STR[ci.role]} acc={ci.accId} "
+            f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
+        )
+
+    def ToggleMute(self) -> None:
+        self.TxMute(not self._muted)

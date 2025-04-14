@@ -119,7 +119,7 @@
                     "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
                     "Number": "tel2",
                     "PinName": "Q3",
-                    "Action": "Call"
+                    "Action": "Mute"
                 },
                 "3": {
                     "Annotation": "телефон 3",

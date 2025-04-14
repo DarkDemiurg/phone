@@ -174,7 +174,17 @@ class PhoneApp:
             cc.Accept()
 
     def process_mute(self, pin_name):
-        pass
+        cc = self.current_call
+
+        if cc is None:
+            logger.info(
+                f"Mute button pressed: {pin_name}. Current call is None. Mute skipped."
+            )
+        else:
+            logger.info(
+                f"Mute button pressed: {pin_name}. Current call is not None. Toggle mute for this call."
+            )
+            cc.ToggleMute()
 
 
 if __name__ == "__main__":
