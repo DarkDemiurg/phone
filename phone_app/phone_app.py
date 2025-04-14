@@ -3,7 +3,7 @@
 import atexit
 
 import pjsua2 as pj  # type: ignore
-from const import LOG_LEVEL
+from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL
 from gpio_client import GpioClient
 from icecream import install
 from loguru import logger
@@ -88,20 +88,36 @@ class PhoneApp:
     def __choose_account(self, number: str) -> PhoneAccount:
         return self.accounts[0]  # TODO: implement stub for multiple accounts
 
+    def run(self):
+        if HOST:
+            socket_path = GPIO_SOCKET_PATH
+        else:
+            socket_path = self.cfg.gpio_server_socket
+
+        self.gpio_client = GpioClient()
+        self.gpio_client.serve_forever(socket_path, self.pin_callback)
+
+    def print_audio_devs(self):
+        for d in self.ep.audDevManager().enumDev2():
+            p: pj.AudioDevInfo = d
+            logger.debug(p.name)
+
+    def pin_callback(self, pin_name: str) -> None:
+        logger.debug(
+            f"PIN handled: {pin_name}. Action = {self.cfg.pin_action(pin_name)}"
+        )
+
 
 if __name__ == "__main__":
     app = PhoneApp()
 
-    # for d in app.ep.audDevManager().enumDev2():
-    #     p: pj.AudioDevInfo = d
-    #     print(p.name)
+    # app.print_audio_devs()
 
     # app.make_call("5006")
+
     # app.make_call("0036111")
 
     for t in app.cfg.triggers_input:
         print(t)
 
-    socket_path = "/tmp/gpio-server.socket"  # app.gpio_server_socket
-    gpio_client = GpioClient()
-    gpio_client.serve_forever(socket_path)
+    app.run()

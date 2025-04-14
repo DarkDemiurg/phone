@@ -1,6 +1,6 @@
 import socket
 import threading
-from typing import Optional
+from typing import Callable, Optional
 
 
 class GpioClient:
@@ -21,7 +21,7 @@ class GpioClient:
 
         self._initialized: bool = True
 
-    def serve_forever(self, socket_path: str):
+    def serve_forever(self, socket_path: str, callback: Callable[[str], None]):
         self.__is_shut_down.clear()
         try:
             with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
@@ -35,14 +35,14 @@ class GpioClient:
                     if len(res) >= 4:
                         try:
                             msg = res.decode("ASCII")
-                            print(f"{msg=}")
                             parts = msg.split("=")
                             if len(parts) == 2:
                                 pin = parts[0]
                                 state = parts[1]
 
                                 if state == "1":
-                                    print(f"Button pressed: {pin}")
+                                    if callback is not None:
+                                        callback(pin)
                         except Exception:
                             pass
         finally:

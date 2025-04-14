@@ -1,5 +1,6 @@
 import json
 from enum import StrEnum
+from typing import Optional
 
 from const import GENERAL_CONFIG, OS_RELEASE
 
@@ -24,7 +25,7 @@ def get_user_agent():
     return f"{model}/{build_time}"
 
 
-class Actions(StrEnum):
+class Action(StrEnum):
     Call = "Call"
     Answer = "Answer"
     Mute = "Mute"
@@ -39,7 +40,10 @@ class TriggerInput:
         # self.line_link: str #= "Device.Voip.VoiceProfile.1.Line.1."
         self.number: str = number  # = "tel1"
         self.pin_name: str = pin_name  # = "Q2"
-        self.action: Actions = Actions[action]  # = "Call"
+        self.action: Action = Action[action]  # = "Call"
+
+    def __str__(self):
+        return f"[{self.idx}] {self.pin_name=} {self.number=} {self.action=}"
 
 
 class Config:
@@ -128,3 +132,10 @@ class Config:
     @property
     def triggers_input(self) -> list[TriggerInput]:
         return self._triggers_input
+
+    def pin_action(self, pin_name: str) -> Optional[Action]:
+        for ti in self._triggers_input:
+            if ti.pin_name == pin_name:
+                return ti.action
+
+        return None
