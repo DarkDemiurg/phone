@@ -50,32 +50,32 @@ class PhoneCall(pj.Call):
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 
-        breakpoint()
-        # return super().onCallState(cs_prm)
-
     def onCallMediaState(self, med_prm: pj.OnCallMediaStateParam):
-        ci = self.getInfo()
-        for mi in ci.media:
-            if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
-                mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
-                or mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
-            ):
-                m = self.getMedia(mi.index)
-                am = pj.AudioMedia.typecastFromMedia(m)
-                # connect ports
-                self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(
-                    am
-                )
-                am.startTransmit(
-                    self.account.app.ep.audDevManager().getPlaybackDevMedia()
-                )
+        try:
+            ci = self.getInfo()
+            for mi in ci.media:
+                if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
+                    mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
+                    or mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
+                ):
+                    m = self.getMedia(mi.index)
+                    am = pj.AudioMedia.typecastFromMedia(m)
+                    # connect ports
+                    self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(
+                        am
+                    )
+                    am.startTransmit(
+                        self.account.app.ep.audDevManager().getPlaybackDevMedia()
+                    )
 
-                if mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD and not self.onhold:
-                    logger.info(f"[{self.peerUri}] sets call onhold")
-                    self.onhold = True
-                elif mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE and self.onhold:
-                    logger.info(f"[{self.peerUri}] sets call active")
-                    self.onhold = False
+                    if mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD and not self.onhold:
+                        logger.info(f"[{self.peerUri}] sets call onhold")
+                        self.onhold = True
+                    elif mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE and self.onhold:
+                        logger.info(f"[{self.peerUri}] sets call active")
+                        self.onhold = False
+        except Exception:
+            logger.exception("Media error:")
 
     def Accept(self):
         try:
@@ -117,31 +117,38 @@ class PhoneCall(pj.Call):
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
 
     def TxMute(self, mute: bool):
-        am = None
-        ci = self.getInfo()
-        for mi in ci.media:
-            if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
-                mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
-                or mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
-            ):
-                m = self.getMedia(mi.index)
-                am = pj.AudioMedia.typecastFromMedia(m)
+        try:
+            am = None
+            ci = self.getInfo()
+            for mi in ci.media:
+                if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
+                    mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
+                    or mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
+                ):
+                    m = self.getMedia(mi.index)
+                    am = pj.AudioMedia.typecastFromMedia(m)
 
-        if am is None:
-            logger.error("AudioMedia not found")
-            return
+            if am is None:
+                logger.error("AudioMedia not found")
+                return
 
-        if mute:
-            self.account.app.ep.audDevManager().getCaptureDevMedia().stopTransmit(am)
-            self._muted = True
-        else:
-            self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(am)
-            self._muted = False
+            if mute:
+                self.account.app.ep.audDevManager().getCaptureDevMedia().stopTransmit(
+                    am
+                )
+                self._muted = True
+            else:
+                self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(
+                    am
+                )
+                self._muted = False
 
-        logger.debug(
-            f"[{self.call_id}] mute = {mute}: {ROLE_STR[ci.role]} acc={ci.accId} "
-            f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
-        )
+            logger.debug(
+                f"[{self.call_id}] mute = {mute}: {ROLE_STR[ci.role]} acc={ci.accId} "
+                f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
+            )
+        except Exception:
+            logger.exception("TxMute error:")
 
     def ToggleMute(self) -> None:
         self.TxMute(not self._muted)
