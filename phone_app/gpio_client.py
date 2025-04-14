@@ -2,6 +2,8 @@ import socket
 import threading
 from typing import Callable, Optional
 
+from loguru import logger
+
 
 class GpioClient:
     _instance: Optional["GpioClient"] = None
@@ -23,31 +25,40 @@ class GpioClient:
 
     def serve_forever(self, socket_path: str, callback: Callable[[str], None]):
         self.__is_shut_down.clear()
+
         try:
-            with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
-                s.connect(socket_path)
-                while not self.__shutdown_request:
-                    res = s.recv(14)
+            while not self.__shutdown_request:
+                try:
+                    with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
+                        s.connect(socket_path)
 
-                    if self.__shutdown_request:
-                        break
+                        logger.debug(f"Connected to socket: {socket_path}")
 
-                    if len(res) >= 4:
-                        try:
-                            msg = res.decode("ASCII")
-                            parts = msg.split("=")
-                            if len(parts) == 2:
-                                pin = parts[0]
-                                state = parts[1]
+                        while not self.__shutdown_request:
+                            res = s.recv(14)
 
-                                if state == "1":
-                                    if callback is not None:
-                                        callback(pin)
-                        except Exception:
-                            pass
+                            if self.__shutdown_request:
+                                break
+
+                            if len(res) >= 4:
+                                try:
+                                    msg = res.decode("ASCII")
+                                    parts = msg.split("=")
+                                    if len(parts) == 2:
+                                        pin = parts[0]
+                                        state = parts[1]
+
+                                        if state == "1":
+                                            if callback is not None:
+                                                callback(pin)
+                                except Exception:
+                                    pass
+                except Exception:
+                    logger.exception("GpioClient error:")
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
+            logger.info("GpioClient termianted")
 
     def shutdown(self):
         self.__shutdown_request = True

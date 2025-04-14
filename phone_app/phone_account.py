@@ -29,9 +29,9 @@ class PhoneAccount(pj.Account):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
 
         if not self.app.call_allowed:
-            phone_call.decline()
+            phone_call.Decline()
         else:
-            phone_call.accept()
+            phone_call.Accept()
             self.add_call(phone_call)
 
     def onRegState(self, reg_prm: pj.OnRegStateParam):
@@ -54,7 +54,6 @@ class PhoneAccount(pj.Account):
             dest_uri = f"sip:{number}@{self.server}"
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
-            logger.debug(f"CALL ADDED: {len(self.calls)}: {self.calls=}")
         except pj.Error as pjerr:
             logger.error(pjerr.info())
 

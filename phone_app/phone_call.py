@@ -76,7 +76,7 @@ class PhoneCall(pj.Call):
                     logger.info(f"[{self.peerUri}] sets call active")
                     self.onhold = False
 
-    def accept(self):
+    def Accept(self):
         try:
             prm = pj.CallOpParam()
             prm.statusCode = 200
@@ -87,17 +87,30 @@ class PhoneCall(pj.Call):
                 f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
             )
         except Exception as e:
-            logger.error(f"[{self.call_id}] Answer error: {str(e)}")
+            logger.error(f"[{self.call_id}] Call answer error: {str(e)}")
 
-    def decline(self):
+    def Decline(self):
         try:
-            op: pj.CallOpParam = pj.CallOpParam()
-            op.statusCode = pj.PJSIP_SC_BUSY_HERE
-            super().hangup(op)
             ci: pj.CallInfo = self.getInfo()
             logger.debug(
                 f"[{self.call_id}] declined: {ROLE_STR[ci.role]} acc={ci.accId} "
                 f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
             )
+            op: pj.CallOpParam = pj.CallOpParam()
+            op.statusCode = pj.PJSIP_SC_DECLINE
+            super().hangup(op)
         except Exception as e:
-            logger.error(f"[{self.call_id}] Answer error: {str(e)}")
+            logger.error(f"[{self.call_id}] Call decline error: {str(e)}")
+
+    def Terminate(self):
+        try:
+            ci: pj.CallInfo = self.getInfo()
+            logger.debug(
+                f"[{self.call_id}] terminated: {ROLE_STR[ci.role]} acc={ci.accId} "
+                f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
+            )
+            op: pj.CallOpParam = pj.CallOpParam()
+            op.statusCode = pj.PJSIP_SC_REQUEST_TERMINATED
+            super().hangup(op)
+        except Exception as e:
+            logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")

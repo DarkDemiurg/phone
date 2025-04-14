@@ -139,3 +139,10 @@ class Config:
                 return ti.action
 
         return None
+
+    def pin_number(self, pin_name: str) -> Optional[str]:
+        for ti in self._triggers_input:
+            if ti.pin_name == pin_name:
+                return ti.number.strip()
+
+        return None

@@ -3,12 +3,13 @@
 import atexit
 
 import pjsua2 as pj  # type: ignore
-from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL
+from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, USE_THREADS
 from gpio_client import GpioClient
 from icecream import install
 from loguru import logger
 from phone_account import PhoneAccount
-from tools import Config, get_user_agent
+from phone_call import PhoneCall
+from tools import Action, Config, get_user_agent
 
 install()
 
@@ -51,6 +52,14 @@ class PhoneApp:
     def __create_ua_config(self):
         self.ua_cfg = pj.UaConfig()
         self.ua_cfg.userAgent = get_user_agent()
+
+        if USE_THREADS:
+            self.ua_cfg.threadCnt = 1
+            self.ua_cfg.mainThreadOnly = False
+        else:
+            self.ua_cfg.threadCnt = 0
+            self.ua_cfg.mainThreadOnly = True
+
         self.ep_cfg.uaConfig = self.ua_cfg
 
     def __create_log_config(self):
@@ -73,7 +82,7 @@ class PhoneApp:
         self.ep.transportCreate(pj.PJSIP_TRANSPORT_UDP, self.tr)
 
     def __create_accounts(self):
-        self.accounts = []
+        self.accounts: list[PhoneAccount] = []
         acc = PhoneAccount(self, self.cfg.username, self.cfg.password, self.cfg.server)
         self.accounts.append(acc)
 
@@ -81,7 +90,7 @@ class PhoneApp:
     def call_allowed(self):
         return True
 
-    def make_call(self, number: str):
+    def MakeCall(self, number: str):
         logger.debug(f"[PHONE_APP] New outgoing call to: {number}")
         self.__choose_account(number).make_call(number)
 
@@ -103,9 +112,69 @@ class PhoneApp:
             logger.debug(p.name)
 
     def pin_callback(self, pin_name: str) -> None:
-        logger.debug(
-            f"PIN handled: {pin_name}. Action = {self.cfg.pin_action(pin_name)}"
-        )
+        action = self.cfg.pin_action(pin_name)
+        logger.debug(f"PIN handled: {pin_name}. {action}")
+
+        if action is not None:
+            self.process_pin_action(pin_name, action)
+
+    def process_pin_action(self, pin_name: str, action: Action) -> None:
+        try:
+            match action:
+                case Action.Call:
+                    self.process_call(pin_name)
+                case Action.Answer:
+                    self.process_answer(pin_name)
+                case Action.Mute:
+                    self.process_mute(pin_name)
+                case _:
+                    logger.warning(f"Unknown Action: {action}")
+
+        except Exception:
+            logger.exception("PIN process error:")
+
+    @property
+    def current_call(self) -> None | PhoneCall:
+        for acc in self.accounts:
+            if len(acc.calls) > 0:
+                return acc.calls[0]
+
+        return None
+
+    def process_call(self, pin_name):
+        cc = self.current_call
+
+        if cc is None:
+            logger.debug(f"Call button pressed: {pin_name}. Current call is None")
+            number = self.cfg.pin_number(pin_name)
+            if number is not None and len(number) > 0:
+                logger.info(
+                    f'Make new call to number "{number}" because pin "{pin_name}" pressed.'
+                )
+                self.MakeCall(number)
+            else:
+                logger.info(f"Number for PIN = {pin_name} not found. Call skipped.")
+        else:
+            logger.info(
+                f"Call button pressed: {pin_name}. Current call is not None. Terminate this call."
+            )
+            cc.Terminate()
+
+    def process_answer(self, pin_name):
+        cc = self.current_call
+
+        if cc is None:
+            logger.info(
+                f"Answer button pressed: {pin_name}. Current call is None. Answer skipped."
+            )
+        else:
+            logger.info(
+                f"Answer button pressed: {pin_name}. Current call is not None. Answer this call."
+            )
+            cc.Accept()
+
+    def process_mute(self, pin_name):
+        pass
 
 
 if __name__ == "__main__":
@@ -116,8 +185,5 @@ if __name__ == "__main__":
     # app.make_call("5006")
 
     # app.make_call("0036111")
-
-    for t in app.cfg.triggers_input:
-        print(t)
 
     app.run()
