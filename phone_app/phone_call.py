@@ -60,7 +60,7 @@ class PhoneCall(pj.Call):
                 ):
                     m = self.getMedia(mi.index)
                     am = pj.AudioMedia.typecastFromMedia(m)
-                    # connect ports
+
                     self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(
                         am
                     )

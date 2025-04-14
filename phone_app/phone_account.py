@@ -24,8 +24,6 @@ class PhoneAccount(pj.Account):
         self.create(self.cfg)
 
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
-        # logger.debug(f'{call_prm.callId=} {call_prm.rdata=}')
-
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
 
         if not self.app.call_allowed:
@@ -58,13 +56,19 @@ class PhoneAccount(pj.Account):
             logger.error(pjerr.info())
 
     def add_call(self, call: PhoneCall):
-        self.calls.append(call)
-        logger.debug(
-            f"[{self.cfg.idUri}] CALL ADDED: {call.getInfo().remoteUri} CURRENT CALLS: {len(self.calls)}"
-        )
+        try:
+            self.calls.append(call)
+            logger.debug(
+                f"[{self.cfg.idUri}] CALL ADDED: {call.getInfo().remoteUri} CURRENT CALLS: {len(self.calls)}"
+            )
+        except Exception:
+            logger.exception("Append call error")
 
     def remove_call(self, call: PhoneCall):
-        self.calls.remove(call)
-        logger.debug(
-            f"[{self.cfg.idUri}] CALL REMOVED: {call.getInfo().remoteUri} CURRENT CALLS: {len(self.calls)}"
-        )
+        try:
+            self.calls.remove(call)
+            logger.debug(
+                f"[{self.cfg.idUri}] CALL REMOVED: {call.getInfo().remoteUri} CURRENT CALLS: {len(self.calls)}"
+            )
+        except Exception:
+            logger.exception("Remove call error")
