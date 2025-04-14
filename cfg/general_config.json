@@ -218,8 +218,8 @@
                     "Line": {
                         "1": {
                             "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
-                            "AutoAnswerEnable": false,
-                            "AutoAnswerTime": 0,
+                            "AutoAnswerEnable": true,
+                            "AutoAnswerTime": 5,
                             "DirectoryNumber": "5000",
                             "Enable": "Enabled",
                             "SIP": {

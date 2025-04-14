@@ -1,6 +1,8 @@
 """Main module."""
 
 import atexit
+from threading import Thread
+from time import sleep
 
 import pjsua2 as pj  # type: ignore
 from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, USE_THREADS
@@ -98,6 +100,9 @@ class PhoneApp:
         return self.accounts[0]  # TODO: implement stub for multiple accounts
 
     def run(self):
+        t = Thread(target=self.timer_thread, args=[])
+        t.run()
+
         if HOST:
             socket_path = GPIO_SOCKET_PATH
         else:
@@ -135,9 +140,10 @@ class PhoneApp:
 
     @property
     def current_call(self) -> None | PhoneCall:
-        for acc in self.accounts:
-            if len(acc.calls) > 0:
-                return acc.calls[0]
+        for account in self.accounts:
+            for phone_call in account.calls:
+                if not phone_call.delayed:
+                    return phone_call
 
         return None
 
@@ -185,6 +191,33 @@ class PhoneApp:
                 f"Mute button pressed: {pin_name}. Current call is not None. Toggle mute for this call."
             )
             cc.ToggleMute()
+
+    def timer_thread(self):
+        self.ep.libRegisterThread("timer_thread")
+        while True:
+            try:
+                for account in self.accounts:
+                    for phone_call in account.calls:
+                        if phone_call.delayed:
+                            phone_call.delay -= 1
+
+                            logger.debug(f"{phone_call.delay=} {phone_call.delayed=}")
+
+                            if phone_call.delay <= 0:
+                                logger.debug("phone_call.delay <= 0")
+
+                                cc = self.current_call
+                                if cc is None:
+                                    logger.debug("ACCEPT")
+                                    phone_call.Accept()
+                                    phone_call.delayed = False
+                                else:
+                                    logger.debug("REMOVE")
+                                    account.remove_call(phone_call)
+            except Exception:
+                logger.exception("Timer thread error")
+
+            sleep(1)
 
 
 if __name__ == "__main__":

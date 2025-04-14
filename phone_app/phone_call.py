@@ -17,6 +17,8 @@ class PhoneCall(pj.Call):
         self.onhold = False
         self.call_id = call_id
         self._muted = False
+        self.delay = -1
+        self.delayed = False
 
     def onCallState(self, cs_prm: pj.OnCallStateParam):
         # sip_event: pj.SipEvent = cs_prm.e
@@ -128,6 +130,18 @@ class PhoneCall(pj.Call):
             super().answer(op)
         except Exception as e:
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
+
+    def AutoAnswer(self, auto_answer_time: int):
+        try:
+            ci: pj.CallInfo = self.getInfo()
+            logger.debug(
+                f"[{self.call_id}] auto answer: {ROLE_STR[ci.role]} acc={ci.accId} "
+                f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
+            )
+            self.delayed = True
+            self.delay = auto_answer_time
+        except Exception as e:
+            logger.error(f"[{self.call_id}] Auto answer error: {str(e)}")
 
     def TxMute(self, mute: bool):
         try:
