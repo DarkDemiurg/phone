@@ -1,10 +1,10 @@
 """Main module."""
 
 import atexit
-import time
 
 import pjsua2 as pj  # type: ignore
 from const import LOG_LEVEL
+from gpio_client import GpioClient
 from icecream import install
 from loguru import logger
 from phone_account import PhoneAccount
@@ -102,8 +102,6 @@ if __name__ == "__main__":
     for t in app.cfg.triggers_input:
         print(t)
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
+    socket_path = "/tmp/gpio-server.socket"  # app.gpio_server_socket
+    gpio_client = GpioClient()
+    gpio_client.serve_forever(socket_path)

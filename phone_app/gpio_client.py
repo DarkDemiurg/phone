@@ -1,22 +1,54 @@
 import socket
-import os
-
-from loguru import logger
-
-from tools import Config
-
-socket_path = Config().cfg.gpio_server_socket
+import threading
+from typing import Optional
 
 
 class GpioClient:
-    def __init__(self, socket_path: str):
-        self.socket_path = socket_path
-    
-    def set_output_pin(pin_name: str, val: bool):
-        pass
+    _instance: Optional["GpioClient"] = None
 
-with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
-    s.connect(socket_path)
-    while True:
-        res = s.recv(4)
-        print(res)
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(GpioClient, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+
+        self.__is_shut_down = threading.Event()
+        self.__shutdown_request = False
+
+        self._initialized: bool = True
+
+    def serve_forever(self, socket_path: str):
+        self.__is_shut_down.clear()
+        try:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
+                s.connect(socket_path)
+                while not self.__shutdown_request:
+                    res = s.recv(14)
+
+                    if self.__shutdown_request:
+                        break
+
+                    if len(res) >= 4:
+                        try:
+                            msg = res.decode("ASCII")
+                            print(f"{msg=}")
+                            parts = msg.split("=")
+                            if len(parts) == 2:
+                                pin = parts[0]
+                                state = parts[1]
+
+                                if state == "1":
+                                    print(f"Button pressed: {pin}")
+                        except Exception:
+                            pass
+        finally:
+            self.__shutdown_request = False
+            self.__is_shut_down.set()
+
+    def shutdown(self):
+        self.__shutdown_request = True
+        self.__is_shut_down.wait()
