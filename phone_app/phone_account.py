@@ -25,11 +25,15 @@ class PhoneAccount(pj.Account):
 
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
-
-        if not self.app.call_allowed:
-            phone_call.Decline()
+        breakpoint()
+        if self.app.cfg.auto_answer_enabled:
+            if self.app.cfg.auto_answer_time > 0:
+                pass  # TODO: timer for auto answer
+            else:
+                phone_call.Accept()
+                self.add_call(phone_call)
         else:
-            phone_call.Accept()
+            phone_call.Ringing()
             self.add_call(phone_call)
 
     def onRegState(self, reg_prm: pj.OnRegStateParam):

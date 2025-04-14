@@ -116,6 +116,19 @@ class PhoneCall(pj.Call):
         except Exception as e:
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
 
+    def Ringing(self):
+        try:
+            ci: pj.CallInfo = self.getInfo()
+            logger.debug(
+                f"[{self.call_id}] ringing: {ROLE_STR[ci.role]} acc={ci.accId} "
+                f"local={ci.localUri} remote={ci.remoteUri} {ci.stateText}"
+            )
+            op: pj.CallOpParam = pj.CallOpParam()
+            op.statusCode = pj.PJSIP_SC_RINGING
+            super().answer(op)
+        except Exception as e:
+            logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
+
     def TxMute(self, mute: bool):
         try:
             am = None

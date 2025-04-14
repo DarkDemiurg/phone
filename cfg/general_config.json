@@ -155,7 +155,7 @@
                     "LineLink": "Device.Voip.VoiceProfile.1.Line.1.",
                     "Number": "tel6",
                     "PinName": "Q7",
-                    "Action": "Call"
+                    "Action": "Answer"
                 },
                 "7": {
                     "Annotation": "телефон 7",
@@ -218,7 +218,7 @@
                     "Line": {
                         "1": {
                             "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
-                            "AutoAnswerEnable": true,
+                            "AutoAnswerEnable": false,
                             "AutoAnswerTime": 0,
                             "DirectoryNumber": "5000",
                             "Enable": "Enabled",
