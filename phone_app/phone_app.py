@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """Main module."""
 
 import atexit
