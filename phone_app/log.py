@@ -21,6 +21,6 @@ fh = logging.handlers.RotatingFileHandler(
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-sh = logging.handlers.SysLogHandler(address="/tmp/messages")
+sh = logging.handlers.SysLogHandler()
 sh.setFormatter(formatter)
 logger.addHandler(sh)
