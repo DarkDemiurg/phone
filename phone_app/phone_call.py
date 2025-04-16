@@ -1,5 +1,5 @@
 import pjsua2 as pj
-from loguru import logger
+from log import logger
 
 ROLE_STR = {
     pj.PJSIP_ROLE_UAC: "outgoing",
@@ -179,3 +179,12 @@ class PhoneCall(pj.Call):
 
     def ToggleMute(self) -> None:
         self.TxMute(not self._muted)
+
+    def Active(self) -> bool:
+        try:
+            ci: pj.CallInfo = self.getInfo()
+            return ci.state == pj.PJSIP_INV_STATE_CONFIRMED
+        except Exception:
+            logger.exception("Active error:")
+
+        return False

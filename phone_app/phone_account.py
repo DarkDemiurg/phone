@@ -1,5 +1,5 @@
 import pjsua2 as pj
-from loguru import logger
+from log import logger
 from phone_call import PhoneCall
 
 
@@ -15,8 +15,10 @@ class PhoneAccount(pj.Account):
 
     def __create(self):
         self.cfg = pj.AccountConfig()
+
         self.cfg.idUri = f"sip:{self.username}@{self.server}"
         self.cfg.regConfig.registrarUri = f"sip:{self.server}"
+        self.cfg.regConfig.timeoutSec = self.app.cfg.register_expires
 
         cred = pj.AuthCredInfo("digest", "*", self.username, 0, self.password)
         self.cfg.sipConfig.authCreds.append(cred)

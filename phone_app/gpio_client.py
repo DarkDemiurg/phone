@@ -2,7 +2,7 @@ import socket
 import threading
 from typing import Callable, Optional
 
-from loguru import logger
+from log import logger
 
 
 class GpioClient:
@@ -29,6 +29,7 @@ class GpioClient:
         try:
             while not self.__shutdown_request:
                 try:
+                    logger.debug(f"Trying connect to socket: {socket_path}")
                     with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0) as s:
                         s.connect(socket_path)
 
@@ -36,13 +37,12 @@ class GpioClient:
 
                         while not self.__shutdown_request:
                             res = s.recv(14)
-
                             if self.__shutdown_request:
                                 break
 
                             if len(res) >= 4:
                                 try:
-                                    msg = res.decode("ASCII")
+                                    msg = res.decode("ASCII").strip("\x00")
                                     parts = msg.split("=")
                                     if len(parts) == 2:
                                         pin = parts[0]
@@ -58,7 +58,7 @@ class GpioClient:
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
-            logger.info("GpioClient termianted")
+            logger.info("GpioClient terminated")
 
     def shutdown(self):
         self.__shutdown_request = True

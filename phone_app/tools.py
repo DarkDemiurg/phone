@@ -81,7 +81,7 @@ class Config:
     def reload_config(self):
         self._load_config()
 
-    @property
+    @property  # +
     def gpio_server_socket(self) -> str:
         return self._cfg["Device"]["Voip"]["GPIOServerSocket"]  # noqa
 
@@ -111,13 +111,13 @@ class Config:
             "RegisterExpires"
         ]
 
-    @property
+    @property  # +
     def auto_answer_enabled(self) -> bool:
         return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
             "AutoAnswerEnable"
         ]
 
-    @property
+    @property  # +
     def auto_answer_time(self) -> int:
         return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
             "AutoAnswerTime"
@@ -129,7 +129,7 @@ class Config:
             "ProxyServerPort"
         ]
 
-    @property
+    @property  # +
     def triggers_input(self) -> list[TriggerInput]:
         return self._triggers_input
 

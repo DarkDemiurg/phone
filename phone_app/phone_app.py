@@ -5,17 +5,12 @@ from threading import Thread
 from time import sleep
 
 import pjsua2 as pj  # type: ignore
-from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, USE_THREADS
+from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL
 from gpio_client import GpioClient
-from icecream import install
-from loguru import logger
+from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
 from tools import Action, Config, get_user_agent
-
-install()
-
-logger.add("/tmp/phone_app.log", rotation="1 MB")
 
 
 class PhoneApp:
@@ -44,6 +39,7 @@ class PhoneApp:
         self.ep.libStart()
 
     def __destroy(self):
+        self.gpio_client.shutdown()
         self.ep.libDestroy()
 
     def __create_media_config(self):
@@ -55,12 +51,12 @@ class PhoneApp:
         self.ua_cfg = pj.UaConfig()
         self.ua_cfg.userAgent = get_user_agent()
 
-        if USE_THREADS:
-            self.ua_cfg.threadCnt = 1
-            self.ua_cfg.mainThreadOnly = False
-        else:
-            self.ua_cfg.threadCnt = 0
-            self.ua_cfg.mainThreadOnly = True
+        # if USE_THREADS:
+        #     self.ua_cfg.threadCnt = 1
+        #     self.ua_cfg.mainThreadOnly = False
+        # else:
+        #     self.ua_cfg.threadCnt = 0
+        #     self.ua_cfg.mainThreadOnly = True
 
         self.ep_cfg.uaConfig = self.ua_cfg
 
@@ -101,7 +97,7 @@ class PhoneApp:
 
     def run(self):
         t = Thread(target=self.timer_thread, args=[])
-        t.run()
+        t.start()
 
         if HOST:
             socket_path = GPIO_SOCKET_PATH
@@ -177,7 +173,10 @@ class PhoneApp:
             logger.info(
                 f"Answer button pressed: {pin_name}. Current call is not None. Answer this call."
             )
-            cc.Accept()
+            if cc.Active():
+                cc.Terminate()
+            else:
+                cc.Accept()
 
     def process_mute(self, pin_name):
         cc = self.current_call
