@@ -1,4 +1,6 @@
-HOST = True
+import platform
+
+HOST = platform.machine() != "armv7l"
 
 if HOST:
     GENERAL_CONFIG = "cfg/general_config.json"
