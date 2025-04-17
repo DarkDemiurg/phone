@@ -9,6 +9,7 @@ if HOST:
     LOG_LEVEL = 4
     GPIO_SOCKET_PATH = "/tmp/gpio-server.socket"
     USE_THREADS = True
+    VOIP_RUNTIME_DATA = "/tmp/voip_runtime_data.json"
 else:
     GENERAL_CONFIG = "/tmp/etc/general_config.json"
     OS_RELEASE = "/usr/lib/os-release"
@@ -16,3 +17,4 @@ else:
     LOG_LEVEL = 3
     GPIO_SOCKET_PATH = "/var/run/gpio-server.socket"
     USE_THREADS = True
+    VOIP_RUNTIME_DATA = "/var/run/voip_runtime_data.json"

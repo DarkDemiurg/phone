@@ -1,8 +1,10 @@
-1. Автоответ
-2. Задержка для автоответа
-3. Загрузка конфига
++ 1. Автоответ
++ 2. Задержка для автоответа
++ 3. Загрузка конфига
 4. Перезагрузка конфига
 5. VoicePinName - включать динамик при вызове и отключать после
+6. SIP статус вызова
+7. Мультикаст статус /tmp/mcast_data.json
 
 ./configure
 --disable-static
@@ -29,3 +31,9 @@
 --disable-speex-codec
 --enable-libuuid
     --disable-video
+
+
+{exovoip::LineCallStatus_Idle, "Idle"},
+{exovoip::LineCallStatus_Busy, "Busy"},
+{exovoip::LineCallStatus_Calling, "Calling"},
+{exovoip::LineCallStatus_Ringing, "Ringing"}
