@@ -58,7 +58,7 @@ class GpioClient:
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
-            logger.info("GpioClient terminated")
+            logger.debug("GpioClient terminated")
 
     def shutdown(self):
         self.__shutdown_request = True

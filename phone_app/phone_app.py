@@ -94,7 +94,6 @@ class PhoneApp:
         return True
 
     def MakeCall(self, number: str):
-        logger.debug(f"[PHONE_APP] New outgoing call to: {number}")
         self.__choose_account(number).make_call(number)
 
     def __choose_account(self, number: str) -> PhoneAccount:

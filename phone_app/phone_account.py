@@ -29,7 +29,7 @@ class PhoneAccount(pj.Account):
 
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
-
+        logger.info("New incoming call")
         if self.app.cfg.auto_answer_enabled:
             if self.app.cfg.auto_answer_time > 0:
                 phone_call.AutoAnswer(self.app.cfg.auto_answer_time)
@@ -48,7 +48,7 @@ class PhoneAccount(pj.Account):
         #     f"{ai.id=} {ai.isDefault=} {ai.uri=} {ai.regIsConfigured=} {ai.regIsActive=} {ai.regExpiresSec=} "
         #     f"{ai.regStatus=} {ai.regStatusText=} {ai.regLastErr=} {ai.onlineStatus=} {ai.onlineStatusText=}"
         # )
-        logger.debug(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
+        logger.info(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
 
         if ai.regStatus == 200:
             self.app.stat.set_register_status(RegisterStatus.Registered)
@@ -65,7 +65,8 @@ class PhoneAccount(pj.Account):
             dest_uri = f"sip:{number}@{self.server}"
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
-            self.app.stat.set_set_call_status(CallStatus.Calling)
+            self.app.stat.set_call_status(CallStatus.Calling)
+            logger.info(f"New outgoing call to: {dest_uri}")
         except pj.Error as pjerr:
             logger.error(pjerr.info())
 

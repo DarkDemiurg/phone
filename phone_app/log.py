@@ -1,5 +1,5 @@
 import logging
-import logging.handlers
+from logging.handlers import RotatingFileHandler, SysLogHandler
 
 from const import HOST
 
@@ -17,13 +17,13 @@ ch = logging.StreamHandler()
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-fh = logging.handlers.RotatingFileHandler(
+fh = RotatingFileHandler(
     "/tmp/phone_app.log", maxBytes=1 * MB, encoding="utf-8", backupCount=1
 )
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 if not HOST:
-    sh = logging.handlers.SysLogHandler("/var/log/messages")
+    sh = SysLogHandler(address="/dev/log")
     sh.setFormatter(formatter)
     logger.addHandler(sh)
