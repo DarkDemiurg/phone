@@ -1,6 +1,7 @@
 import pjsua2 as pj
 from log import logger
 from phone_call import PhoneCall
+from voip_statistics import CallStatus, RegisterStatus
 
 
 class PhoneAccount(pj.Account):
@@ -24,6 +25,7 @@ class PhoneAccount(pj.Account):
         self.cfg.sipConfig.authCreds.append(cred)
 
         self.create(self.cfg)
+        self.app.stat.set_register_status(RegisterStatus.Registering)
 
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
@@ -48,6 +50,11 @@ class PhoneAccount(pj.Account):
         # )
         logger.debug(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
 
+        if ai.regStatus == 200:
+            self.app.stat.set_register_status(RegisterStatus.Registered)
+        else:
+            self.app.stat.set_register_status(RegisterStatus.RegisterError)
+
         return super().onRegState(reg_prm)
 
     def make_call(self, number: str):
@@ -58,6 +65,7 @@ class PhoneAccount(pj.Account):
             dest_uri = f"sip:{number}@{self.server}"
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
+            self.app.stat.set_set_call_status(CallStatus.Calling)
         except pj.Error as pjerr:
             logger.error(pjerr.info())
 

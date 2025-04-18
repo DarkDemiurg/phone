@@ -31,9 +31,3 @@
 --disable-speex-codec
 --enable-libuuid
     --disable-video
-
-
-{exovoip::LineCallStatus_Idle, "Idle"},
-{exovoip::LineCallStatus_Busy, "Busy"},
-{exovoip::LineCallStatus_Calling, "Calling"},
-{exovoip::LineCallStatus_Ringing, "Ringing"}

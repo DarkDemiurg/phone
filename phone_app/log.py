@@ -1,6 +1,8 @@
 import logging
 import logging.handlers
 
+from const import HOST
+
 KB = 1024
 MB = 1024 * KB
 
@@ -21,6 +23,7 @@ fh = logging.handlers.RotatingFileHandler(
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-sh = logging.handlers.SysLogHandler("/var/log/messages")
-sh.setFormatter(formatter)
-logger.addHandler(sh)
+if not HOST:
+    sh = logging.handlers.SysLogHandler("/var/log/messages")
+    sh.setFormatter(formatter)
+    logger.addHandler(sh)

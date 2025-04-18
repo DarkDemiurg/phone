@@ -12,6 +12,7 @@ from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
 from tools import Action, Config, get_user_agent
+from voip_statistics import CallStatus, RegisterStatus, Statistics
 
 
 class PhoneApp:
@@ -21,6 +22,7 @@ class PhoneApp:
 
     def __init(self):
         self.cfg = Config()
+        self.stat = Statistics()
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
@@ -40,6 +42,8 @@ class PhoneApp:
         self.ep.libStart()
 
     def __destroy(self):
+        self.stat.set_call_status(CallStatus.Unknown)
+        self.stat.set_register_status(RegisterStatus.Unknown)
         self.gpio_client.shutdown()
         self.ep.libDestroy()
 

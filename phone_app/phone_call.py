@@ -1,5 +1,6 @@
 import pjsua2 as pj
 from log import logger
+from voip_statistics import CallStatus
 
 ROLE_STR = {
     pj.PJSIP_ROLE_UAC: "outgoing",
@@ -46,9 +47,10 @@ class PhoneCall(pj.Call):
             if ci.state == pj.PJSIP_INV_STATE_CONNECTING:  # After 2xx is sent/received.
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
-                pass
+                self.account.app.stat.set_call_status(CallStatus.Busy)
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
+                self.account.app.stat.set_call_status(CallStatus.Idle)
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 
@@ -128,6 +130,7 @@ class PhoneCall(pj.Call):
             op: pj.CallOpParam = pj.CallOpParam()
             op.statusCode = pj.PJSIP_SC_RINGING
             super().answer(op)
+            self.account.app.stat.set_call_status(CallStatus.Ringing)
         except Exception as e:
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
 
@@ -140,6 +143,7 @@ class PhoneCall(pj.Call):
             )
             self.delayed = True
             self.delay = auto_answer_time
+            self.account.app.stat.set_call_status(CallStatus.Ringing)
         except Exception as e:
             logger.error(f"[{self.call_id}] Auto answer error: {str(e)}")
 

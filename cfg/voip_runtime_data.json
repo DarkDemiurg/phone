@@ -1,0 +1,17 @@
+{
+    "Device": {
+        "Voip": {
+            "VoiceProfile": {
+                "1": {
+                    "Line": {
+                        "1": {
+                            "CallStatus": "Idle",
+                            "RegisterStatus": "Registered",
+                            "BackupRegisterStatus": "Unknown"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
