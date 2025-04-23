@@ -49,7 +49,9 @@ class PhoneApp:
 
     def __create_media_config(self):
         self.med_cfg = pj.MediaConfig()
-
+        self.med_cfg.ecOptions = (
+            pj.PJMEDIA_ECHO_WEBRTC_AEC3 | pj.PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR
+        )
         self.ep_cfg.medConfig = self.med_cfg
 
     def __create_ua_config(self):
