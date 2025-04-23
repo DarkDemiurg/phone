@@ -28,12 +28,7 @@ class PlaySound:
         try:
             SpeakerOn()
             self.process = subprocess.Popen(
-                self.command,
-                # shell=True,
-                stdin=None,
-                stdout=None,
-                stderr=None,
-                close_fds=True,
+                self.command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
             self.logger.info(f"Процесс запущен [PID: {self.process.pid}]")
             return True

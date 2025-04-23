@@ -181,7 +181,7 @@ class PhoneApp:
             logger.info(
                 f"Answer button pressed: {pin_name}. Current call is not None. Answer this call."
             )
-            self.ring.terminate()
+            self.ring.kill()
             if cc.Active():
                 cc.Terminate()
             else:
@@ -214,7 +214,7 @@ class PhoneApp:
                             if phone_call.delay <= 0:
                                 logger.debug("phone_call.delay <= 0")
 
-                                self.ring.terminate()
+                                self.ring.kill()
 
                                 cc = self.current_call
                                 if cc is None:
