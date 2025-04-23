@@ -217,15 +217,15 @@ class PhoneApp:
                             if phone_call.delay <= 0:
                                 logger.debug("phone_call.delay <= 0")
 
-                                self.ring.kill()
-
                                 cc = self.current_call
                                 if cc is None:
                                     logger.debug("ACCEPT")
+                                    self.ring.kill(speaker_off=False)
                                     phone_call.Accept()
                                     phone_call.delayed = False
                                 else:
                                     logger.debug("REMOVE")
+                                    self.ring.kill()
                                     account.remove_call(phone_call)
             except Exception:
                 logger.exception("Timer thread error")

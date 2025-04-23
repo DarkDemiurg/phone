@@ -36,14 +36,15 @@ class PlaySound:
             self.logger.error(f"Ошибка запуска: {str(e)}")
             return False
 
-    def terminate(self):
+    def terminate(self, speaker_off=True):
         """Корректное завершение процесса"""
         if not self.is_running():
             self.logger.warning("Процесс не запущен")
             return False
 
         try:
-            SpeakerOff()
+            if speaker_off:
+                SpeakerOff()
             self.process.terminate()
             self.logger.info("Сигнал завершения отправлен")
             return True
@@ -51,14 +52,15 @@ class PlaySound:
             self.logger.error(f"Ошибка завершения: {str(e)}")
             return False
 
-    def kill(self):
+    def kill(self, speaker_off=True):
         """Принудительное завершение процесса"""
         if not self.is_running():
             self.logger.warning("Процесс не запущен")
             return False
 
         try:
-            SpeakerOff()
+            if speaker_off:
+                SpeakerOff()
             self.process.kill()
             self.logger.info("Процесс принудительно завершён")
             return True
