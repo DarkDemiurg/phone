@@ -32,10 +32,12 @@ class PhoneAccount(pj.Account):
         logger.info("New incoming call")
         if self.app.cfg.auto_answer_enabled:
             if self.app.cfg.auto_answer_time > 0:
+                self.app.ring.start()
                 phone_call.AutoAnswer(self.app.cfg.auto_answer_time)
             else:
                 phone_call.Accept()
         else:
+            self.app.ring.start()
             phone_call.Ringing()
 
         self.add_call(phone_call)

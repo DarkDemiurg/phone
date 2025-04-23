@@ -11,6 +11,7 @@ from gpio_client import GpioClient
 from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
+from playsound import PlaySound
 from tools import Action, Config, get_user_agent
 from voip_statistics import CallStatus, RegisterStatus, Statistics
 
@@ -23,6 +24,7 @@ class PhoneApp:
     def __init(self):
         self.cfg = Config()
         self.stat = Statistics()
+        self.ring = PlaySound()
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
@@ -179,6 +181,7 @@ class PhoneApp:
             logger.info(
                 f"Answer button pressed: {pin_name}. Current call is not None. Answer this call."
             )
+            self.ring.terminate()
             if cc.Active():
                 cc.Terminate()
             else:
@@ -210,6 +213,8 @@ class PhoneApp:
 
                             if phone_call.delay <= 0:
                                 logger.debug("phone_call.delay <= 0")
+
+                                self.ring.terminate()
 
                                 cc = self.current_call
                                 if cc is None:
