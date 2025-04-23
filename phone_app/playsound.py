@@ -10,8 +10,8 @@ from speaker import SpeakerOff, SpeakerOn
 class PlaySound:
     def __init__(
         self,
-        command: list[str] = ["gplaysound"],
-        args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "3"],
+        command: str = "gplaysound",
+        args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "10"],
     ):
         self.command = [command] if isinstance(command, str) else command
         if args:
@@ -29,7 +29,7 @@ class PlaySound:
             SpeakerOn()
             self.process = subprocess.Popen(
                 self.command,
-                shell=True,
+                # shell=True,
                 stdin=None,
                 stdout=None,
                 stderr=None,
