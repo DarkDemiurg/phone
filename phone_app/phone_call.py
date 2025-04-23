@@ -53,6 +53,8 @@ class PhoneCall(pj.Call):
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
                 self.account.app.stat.set_call_status(CallStatus.Idle)
+                self.account.app.ringing.kill()
+                self.account.app.ring.kill()
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 
@@ -120,7 +122,7 @@ class PhoneCall(pj.Call):
             op.statusCode = pj.PJSIP_SC_REQUEST_TERMINATED
             super().hangup(op)
         except Exception as e:
-            logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
+            logger.exception(f"[{self.call_id}] Call terminate error: {str(e)}")
 
     def Ringing(self):
         try:
