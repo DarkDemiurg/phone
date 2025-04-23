@@ -25,6 +25,9 @@ class PhoneApp:
         self.cfg = Config()
         self.stat = Statistics()
         self.ring = PlaySound()
+        self.ringing = PlaySound(
+            args=["-f", "/usr/share/sound/ringing.mp3", "-d", "pcm_int", "-r", "10"]
+        )
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()

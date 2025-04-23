@@ -48,6 +48,7 @@ class PhoneCall(pj.Call):
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
                 self.account.app.stat.set_call_status(CallStatus.Busy)
+                self.account.app.ringing.terminate()
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
                 self.account.app.stat.set_call_status(CallStatus.Idle)
