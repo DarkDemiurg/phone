@@ -1,6 +1,6 @@
 import os
 import subprocess
-from time import time
+from time import sleep, time
 
 from log import logger
 from speaker import LedOff, LedOn, SpeakerOff, SpeakerOn
@@ -28,8 +28,9 @@ class PlaySound:
 
         try:
             os.system("killall -9 gplaysound")
-            SpeakerOn()
+            sleep(1)
             LedOn()
+            SpeakerOn()
             self.process = subprocess.Popen(
                 self.command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
