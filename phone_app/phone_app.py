@@ -28,7 +28,7 @@ class PhoneApp:
             args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "10"]
         )
         self.ringing = PlaySound(
-            args=["-f", "/usr/share/sound/ringing.mp3", "-d", "pcm_int", "-r", "10"]
+            args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "10"]
         )
         self.__create_lib()
         self.__init_lib()
