@@ -25,10 +25,38 @@ class PhoneApp:
         self.cfg = Config()
         self.stat = Statistics()
         self.ring = PlaySound(
-            args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
+            # args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
+            args=[
+                "multifilesrc",
+                "location=/usr/share/sound/ring.mp3",
+                "loop=true",
+                "!",
+                "decodebin",
+                "!",
+                "audioconvert",
+                "!",
+                "audioresample",
+                "!",
+                "alsasink",
+                "device=pcm_int",
+            ]
         )
         self.ringing = PlaySound(
-            args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
+            # args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
+            args=[
+                "multifilesrc",
+                "location=/usr/share/sound/ringing.mp3",
+                "loop=true",
+                "!",
+                "decodebin",
+                "!",
+                "audioconvert",
+                "!",
+                "audioresample",
+                "!",
+                "alsasink",
+                "device=pcm_int",
+            ]
         )
         self.__create_lib()
         self.__init_lib()
@@ -111,6 +139,9 @@ class PhoneApp:
         return self.accounts[0]  # TODO: implement stub for multiple accounts
 
     def run(self):
+        self.ring.start()
+        sleep(3)
+        self.ring.kill()
         t = Thread(target=self.timer_thread, args=[])
         t.start()
 
@@ -239,11 +270,4 @@ class PhoneApp:
 
 if __name__ == "__main__":
     app = PhoneApp()
-
-    # app.print_audio_devs()
-
-    # app.make_call("5006")
-
-    # app.make_call("0036111")
-
     app.run()

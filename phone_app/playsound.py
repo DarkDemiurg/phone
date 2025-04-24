@@ -11,7 +11,7 @@ from speaker import LedOff, LedOn, SpeakerOff, SpeakerOn
 class PlaySound:
     def __init__(
         self,
-        command: str = "gplaysound",
+        command: str = "gst-launch-1.0",
         args=None,
     ):
         self.command = [command] if isinstance(command, str) else command
