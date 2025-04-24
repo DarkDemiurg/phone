@@ -11,7 +11,7 @@ class PlaySound:
     def __init__(
         self,
         command: str = "gplaysound",
-        args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "10"],
+        args=None,
     ):
         self.command = [command] if isinstance(command, str) else command
         if args:
