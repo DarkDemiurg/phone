@@ -1,3 +1,4 @@
+import os
 import subprocess
 from time import time
 
@@ -26,6 +27,7 @@ class PlaySound:
             return False
 
         try:
+            os.system("killall -9 gplaysound")
             SpeakerOn()
             LedOn()
             self.process = subprocess.Popen(
@@ -68,6 +70,7 @@ class PlaySound:
             LedOff()
             self.process.kill()
             self.logger.info("Процесс принудительно завершён")
+            os.system("killall -9 gplaysound")
             return True
         except Exception as e:
             self.logger.error(f"Ошибка принудительного завершения: {str(e)}")
