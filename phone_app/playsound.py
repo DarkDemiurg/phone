@@ -2,7 +2,7 @@ import subprocess
 from time import time
 
 from log import logger
-from speaker import SpeakerOff, SpeakerOn
+from speaker import LedOff, LedOn, SpeakerOff, SpeakerOn
 
 # gplaysound -f /usr/share/sound/ring.mp3 -d pcm_int -r 3
 
@@ -27,10 +27,13 @@ class PlaySound:
 
         try:
             SpeakerOn()
+            LedOn()
             self.process = subprocess.Popen(
                 self.command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
-            self.logger.info(f"Процесс запущен [PID: {self.process.pid}]")
+            self.logger.info(
+                f"Процесс запущен [PID: {self.process.pid}] {self.command=}"
+            )
             return True
         except Exception as e:
             self.logger.error(f"Ошибка запуска: {str(e)}")
@@ -45,6 +48,7 @@ class PlaySound:
         try:
             if speaker_off:
                 SpeakerOff()
+            LedOff()
             self.process.terminate()
             self.logger.info("Сигнал завершения отправлен")
             return True
@@ -61,6 +65,7 @@ class PlaySound:
         try:
             if speaker_off:
                 SpeakerOff()
+            LedOff()
             self.process.kill()
             self.logger.info("Процесс принудительно завершён")
             return True
