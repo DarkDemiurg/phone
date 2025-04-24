@@ -28,7 +28,7 @@ class PlaySound:
 
         try:
             os.system("killall -9 gplaysound")
-            sleep(1)
+            sleep(0.5)
             LedOn()
             SpeakerOn()
 
@@ -49,7 +49,6 @@ class PlaySound:
                 self._start_output_thread("stderr")
 
             logger.info(f"Процесс запущен [PID: {self.process.pid}] {self.command=}")
-            SpeakerOn()
 
             return True
         except Exception as e:
