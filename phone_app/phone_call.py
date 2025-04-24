@@ -39,7 +39,7 @@ class PhoneCall(pj.Call):
             if ci.state == pj.PJSIP_INV_STATE_NULL:  # Before INVITE is sent or received
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CALLING:  # After INVITE is sent
-                self.account.app.ringing.start()
+                pass
             if ci.state == pj.PJSIP_INV_STATE_INCOMING:  # After INVITE is received.
                 pass
             if ci.state == pj.PJSIP_INV_STATE_EARLY:  # After response with To tag.
