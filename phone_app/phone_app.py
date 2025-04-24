@@ -51,6 +51,8 @@ class PhoneApp:
         self.stat.set_register_status(RegisterStatus.Unknown)
         self.gpio_client.shutdown()
         self.ep.libDestroy()
+        self.ring.kill()
+        self.ringing.kill()
 
     def __create_media_config(self):
         self.med_cfg = pj.MediaConfig()
