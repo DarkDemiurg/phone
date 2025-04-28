@@ -94,8 +94,8 @@ class PlaySound:
             return False
 
         try:
-            if speaker_off:
-                SpeakerOff()
+            # if speaker_off:
+            #     SpeakerOff()
             LedOff()
             self.process.terminate()
             logger.info("Сигнал завершения отправлен")
@@ -111,8 +111,8 @@ class PlaySound:
             return False
 
         try:
-            if speaker_off:
-                SpeakerOff()
+            # if speaker_off:
+            #     SpeakerOff()
             LedOff()
             self.process.kill()
             logger.info("Процесс принудительно завершён")
@@ -143,7 +143,7 @@ class PlaySound:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.is_running():
-            SpeakerOff()
+            # SpeakerOff()
             self.terminate()
             time.sleep(1)
             if self.is_running():
