@@ -49,7 +49,7 @@ class PlaySound:
                 self._start_output_thread("stderr")
 
             logger.info(f"Процесс запущен [PID: {self.process.pid}] {self.command=}")
-
+            SpeakerOn()
             return True
         except Exception as e:
             logger.error(f"Ошибка запуска: {str(e)}")
