@@ -62,6 +62,7 @@ class PlaySound:
             stream = getattr(self.process, stream_name)
             for line in iter(stream.readline, ""):
                 self.output_queue.put((stream_name, line.strip()))
+                logger.debug(f"{line=}")
             stream.close()
 
         thread = threading.Thread(target=reader, daemon=True)
