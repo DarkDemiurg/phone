@@ -28,7 +28,22 @@ class PhoneApp:
             args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
         )
         self.ringing = PlaySound(
-            args=["-f", "/usr/share/sound/ringing.mp3", "-d", "pcm_int", "-r", "30"]
+            # args=["-f", "/usr/share/sound/ringing.mp3", "-d", "pcm_int", "-r", "30"]
+            command="gst-launch-1.0",
+            args=[
+                "multifilesrc",
+                "location=/usr/share/sound/ringing.mp3",
+                "loop=true",
+                "!",
+                "decodebin",
+                "!",
+                "audioconvert",
+                "!",
+                "audioresample",
+                "!",
+                "alsasink",
+                "device=pcm_int",
+            ],
         )
         self.__create_lib()
         self.__init_lib()

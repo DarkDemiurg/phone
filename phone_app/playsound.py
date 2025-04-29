@@ -5,7 +5,7 @@ from queue import Empty, Queue
 from time import sleep, time
 
 from log import logger
-from speaker import LedOff, LedOn, SpeakerOff, SpeakerOn
+from speaker import LedOff, LedOn, SpeakerOn
 
 # gplaysound -f /usr/share/sound/ring.mp3 -d pcm_int -r 3
 
