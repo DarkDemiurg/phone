@@ -1,6 +1,7 @@
 import pjsua2 as pj
 from log import logger
 from phone_call import PhoneCall
+from speaker import SpeakerOn
 from voip_statistics import CallStatus, RegisterStatus
 
 
@@ -65,10 +66,11 @@ class PhoneAccount(pj.Account):
         prm = pj.CallOpParam(True)
         try:
             dest_uri = f"sip:{number}@{self.server}"
+            SpeakerOn()
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
             self.app.stat.set_call_status(CallStatus.Calling)
-            self.app.ringing.start()
+            # self.app.ringing.start()
             logger.info(f"New outgoing call to: {dest_uri}")
         except pj.Error as pjerr:
             logger.error(pjerr.info())
