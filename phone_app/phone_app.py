@@ -54,7 +54,7 @@ class PhoneApp:
         self.gpio_client.shutdown()
         self.ep.libDestroy()
         self.ring.kill()
-        self.ringing.kill()
+        # self.ringing.kill()
 
     def __create_media_config(self):
         self.med_cfg = pj.MediaConfig()

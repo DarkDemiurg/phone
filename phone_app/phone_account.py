@@ -69,8 +69,9 @@ class PhoneAccount(pj.Account):
         try:
             dest_uri = f"sip:{number}@{self.server}"
             SpeakerOn()
-            self.app.ringing.start()
             sleep(1)
+            # self.app.ringing.start()
+            phone_call.play_ring()
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
             self.app.stat.set_call_status(CallStatus.Calling)
