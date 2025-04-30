@@ -37,6 +37,19 @@ class PhoneCall(pj.Call):
         except Exception as e:
             logger.error(f"Play ring: {str(e)}")
 
+    def stop_ring(self):
+        try:
+            if self.player is None:
+                if self.player is not None:
+                    self.player.stopTransmit(
+                        self.account.app.ep.audDevManager().getPlaybackDevMedia()
+                    )
+                    self.player = None
+            else:
+                logger.warning("Player is not None")
+        except Exception as e:
+            logger.error(f"Play ring: {str(e)}")
+
     def onCallState(self, cs_prm: pj.OnCallStateParam):
         # sip_event: pj.SipEvent = cs_prm.e
         # logger.debug(f"{sip_event.type=} {sip_event.body=} {sip_event.pjEvent=}")
@@ -67,9 +80,7 @@ class PhoneCall(pj.Call):
                 # self.account.app.ringing.kill(speaker_off=False)
                 self.account.app.ring.kill(speaker_off=False)
 
-                if self.player is not None:
-                    self.player.stop()
-                    self.player = None
+                self.stop_ring()
 
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
@@ -77,9 +88,7 @@ class PhoneCall(pj.Call):
                 # self.account.app.ringing.kill()
                 self.account.app.ring.kill()
 
-                if self.player is not None:
-                    self.player.stop()
-                    self.player = None
+                self.stop_ring()
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 
