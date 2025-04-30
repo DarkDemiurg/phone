@@ -48,12 +48,12 @@ class PhoneCall(pj.Call):
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
                 self.account.app.stat.set_call_status(CallStatus.Busy)
-                # self.account.app.ringing.kill(speaker_off=False)
+                self.account.app.ringing.kill(speaker_off=False)
                 self.account.app.ring.kill(speaker_off=False)
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
                 self.account.app.stat.set_call_status(CallStatus.Idle)
-                # self.account.app.ringing.kill()
+                self.account.app.ringing.kill()
                 self.account.app.ring.kill()
         except Exception as e:
             logger.error(f"State error: {str(e)}")
@@ -61,6 +61,18 @@ class PhoneCall(pj.Call):
     def onCallMediaState(self, med_prm: pj.OnCallMediaStateParam):
         try:
             ci = self.getInfo()
+
+            # Явно отключаем аудиопотоки в ранних состояниях
+            if ci.state == pj.PJSIP_INV_STATE_EARLY:
+                for mi in ci.media:
+                    if mi.type == pj.PJMEDIA_TYPE_AUDIO:
+                        m = self.getMedia(mi.index)
+                        am = pj.AudioMedia.typecastFromMedia(m)
+
+                        am.stopTransmit(
+                            self.account.app.ep.audDevManager().getPlaybackDevMedia()
+                        )
+
             for mi in ci.media:
                 if mi.type == pj.PJMEDIA_TYPE_AUDIO and (
                     mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE
