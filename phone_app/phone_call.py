@@ -26,9 +26,7 @@ class PhoneCall(pj.Call):
         try:
             if self.player is None:
                 self.player = pj.AudioMediaPlayer()
-                self.player.createPlayer(
-                    "/usr/share/sound/ringing.wav", pj.PJMEDIA_FILE_LOOP
-                )
+                self.player.createPlayer("/usr/share/sound/ringing.wav")
                 self.player.startTransmit(
                     self.account.app.ep.audDevManager().getPlaybackDevMedia()
                 )
