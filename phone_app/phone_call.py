@@ -1,4 +1,5 @@
 import pjsua2 as pj
+from const import RING_OUT
 from log import logger
 from voip_statistics import CallStatus
 
@@ -22,31 +23,30 @@ class PhoneCall(pj.Call):
         self.delayed = False
         self.player: pj.AudioMediaPlayer = None
 
-    def play_ring(self):
+    def play_out_ring(self):
         try:
             if self.player is None:
                 self.player = pj.AudioMediaPlayer()
-                self.player.createPlayer("/usr/share/sound/ringing.wav")
+                self.player.createPlayer(RING_OUT)
                 self.player.startTransmit(
                     self.account.app.ep.audDevManager().getPlaybackDevMedia()
                 )
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Play ring: {str(e)}")
+            logger.error(f"Start player error: {str(e)}")
 
-    def stop_ring(self):
+    def stop_out_ring(self):
         try:
-            if self.player is None:
-                if self.player is not None:
-                    self.player.stopTransmit(
-                        self.account.app.ep.audDevManager().getPlaybackDevMedia()
-                    )
-                    self.player = None
+            if self.player is not None:
+                self.player.stopTransmit(
+                    self.account.app.ep.audDevManager().getPlaybackDevMedia()
+                )
+                self.player = None
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Play ring: {str(e)}")
+            logger.error(f"Stop player error: {str(e)}")
 
     def onCallState(self, cs_prm: pj.OnCallStateParam):
         # sip_event: pj.SipEvent = cs_prm.e
@@ -75,18 +75,14 @@ class PhoneCall(pj.Call):
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
                 self.account.app.stat.set_call_status(CallStatus.Busy)
-                # self.account.app.ringing.kill(speaker_off=False)
-                self.account.app.ring.kill(speaker_off=False)
-
-                self.stop_ring()
+                self.account.app.stop_in_ring()  # self.account.app.ring.kill(speaker_off=False)
+                self.stop_out_ring()
 
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
                 self.account.app.stat.set_call_status(CallStatus.Idle)
-                # self.account.app.ringing.kill()
-                self.account.app.ring.kill()
-
-                self.stop_ring()
+                self.account.app.stop_in_ring()  # self.account.app.ring.kill()
+                self.stop_out_ring()
         except Exception as e:
             logger.error(f"State error: {str(e)}")
 

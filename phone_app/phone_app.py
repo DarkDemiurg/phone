@@ -6,12 +6,11 @@ from threading import Thread
 from time import sleep
 
 import pjsua2 as pj  # type: ignore
-from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL
+from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, RING_IN
 from gpio_client import GpioClient
 from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
-from playsound import PlaySound
 from tools import Action, Config, get_user_agent
 from voip_statistics import CallStatus, RegisterStatus, Statistics
 
@@ -24,12 +23,10 @@ class PhoneApp:
     def __init(self):
         self.cfg = Config()
         self.stat = Statistics()
-        self.ring = PlaySound(
-            args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
-        )
-        self.ringing = PlaySound(
-            args=["-f", "/usr/share/sound/ringing.mp3", "-d", "pcm_int", "-r", "30"]
-        )
+        # self.ring = PlaySound(
+        #     args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
+        # )
+        self.player: pj.AudioMediaPlayer = None
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
@@ -53,8 +50,7 @@ class PhoneApp:
         self.stat.set_register_status(RegisterStatus.Unknown)
         self.gpio_client.shutdown()
         self.ep.libDestroy()
-        self.ring.kill()
-        # self.ringing.kill()
+        self.stop_in_ring()  # self.ring.kill()
 
     def __create_media_config(self):
         self.med_cfg = pj.MediaConfig()
@@ -99,6 +95,27 @@ class PhoneApp:
         self.accounts: list[PhoneAccount] = []
         acc = PhoneAccount(self, self.cfg.username, self.cfg.password, self.cfg.server)
         self.accounts.append(acc)
+
+    def play_in_ring(self):
+        try:
+            if self.player is None:
+                self.player = pj.AudioMediaPlayer()
+                self.player.createPlayer(RING_IN)
+                self.player.startTransmit(self.ep.audDevManager().getPlaybackDevMedia())
+            else:
+                logger.warning("Player is not None")
+        except Exception as e:
+            logger.error(f"Start player error: {str(e)}")
+
+    def stop_in_ring(self):
+        try:
+            if self.player is not None:
+                self.player.stopTransmit(self.ep.audDevManager().getPlaybackDevMedia())
+                self.player = None
+            else:
+                logger.warning("Player is not None")
+        except Exception as e:
+            logger.error(f"Stop player error: {str(e)}")
 
     @property
     def call_allowed(self):
@@ -188,7 +205,7 @@ class PhoneApp:
             logger.info(
                 f"Answer button pressed: {pin_name}. Current call is not None. Answer this call."
             )
-            self.ring.kill()
+            self.stop_in_ring()  # self.ring.kill()
             if cc.Active():
                 cc.Terminate()
             else:
@@ -224,12 +241,12 @@ class PhoneApp:
                                 cc = self.current_call
                                 if cc is None:
                                     logger.debug("ACCEPT")
-                                    self.ring.kill(speaker_off=False)
+                                    self.stop_in_ring()  # self.ring.kill(speaker_off=False)
                                     phone_call.Accept()
                                     phone_call.delayed = False
                                 else:
                                     logger.debug("REMOVE")
-                                    self.ring.kill()
+                                    self.stop_in_ring()  # self.ring.kill()
                                     account.remove_call(phone_call)
             except Exception:
                 logger.exception("Timer thread error")

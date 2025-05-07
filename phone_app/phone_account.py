@@ -35,12 +35,12 @@ class PhoneAccount(pj.Account):
         logger.info("New incoming call")
         if self.app.cfg.auto_answer_enabled:
             if self.app.cfg.auto_answer_time > 0:
-                self.app.ring.start()
+                self.app.play_in_ring()  # self.app.ring.start()
                 phone_call.AutoAnswer(self.app.cfg.auto_answer_time)
             else:
                 phone_call.Accept()
         else:
-            self.app.ring.start()
+            self.app.play_in_ring()  # self.app.ring.start()
             phone_call.Ringing()
 
         self.add_call(phone_call)
@@ -70,8 +70,7 @@ class PhoneAccount(pj.Account):
             dest_uri = f"sip:{number}@{self.server}"
             SpeakerOn()
             sleep(1)
-            # self.app.ringing.start()
-            phone_call.play_ring()
+            phone_call.play_out_ring()
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
             self.app.stat.set_call_status(CallStatus.Calling)

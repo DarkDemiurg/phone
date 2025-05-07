@@ -10,6 +10,8 @@ if HOST:
     GPIO_SOCKET_PATH = "/tmp/gpio-server.socket"
     USE_THREADS = True
     VOIP_RUNTIME_DATA = "cfg/voip_runtime_data.json"
+    RING_OUT = "sound/ringing.wav"
+    RING_IN = "sound/ring.wav"
 else:
     GENERAL_CONFIG = "/tmp/etc/general_config.json"
     OS_RELEASE = "/usr/lib/os-release"
@@ -18,3 +20,5 @@ else:
     GPIO_SOCKET_PATH = "/var/run/gpio-server.socket"
     USE_THREADS = True
     VOIP_RUNTIME_DATA = "/var/run/voip_runtime_data.json"
+    RING_OUT = "/usr/share/sound/ringing.wav"
+    RING_IN = "/usr/share/sound/ring.wav"
