@@ -11,6 +11,7 @@ from gpio_client import GpioClient
 from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
+from speaker import SpeakerOn
 from tools import Action, Config, get_user_agent
 from voip_statistics import CallStatus, RegisterStatus, Statistics
 
@@ -101,11 +102,12 @@ class PhoneApp:
             if self.player is None:
                 self.player = pj.AudioMediaPlayer()
                 self.player.createPlayer(RING_IN)
+                SpeakerOn()
                 self.player.startTransmit(self.ep.audDevManager().getPlaybackDevMedia())
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Start player error: {str(e)}")
+            logger.exception(f"Start player error: {str(e)}")
 
     def stop_in_ring(self):
         try:
@@ -115,7 +117,7 @@ class PhoneApp:
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Stop player error: {str(e)}")
+            logger.exception(f"Stop player error: {str(e)}")
 
     @property
     def call_allowed(self):

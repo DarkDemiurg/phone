@@ -34,7 +34,7 @@ class PhoneCall(pj.Call):
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Start player error: {str(e)}")
+            logger.exception(f"Start player error: {str(e)}")
 
     def stop_out_ring(self):
         try:
@@ -46,7 +46,7 @@ class PhoneCall(pj.Call):
             else:
                 logger.warning("Player is not None")
         except Exception as e:
-            logger.error(f"Stop player error: {str(e)}")
+            logger.exception(f"Stop player error: {str(e)}")
 
     def onCallState(self, cs_prm: pj.OnCallStateParam):
         # sip_event: pj.SipEvent = cs_prm.e

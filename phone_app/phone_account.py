@@ -1,5 +1,3 @@
-from time import sleep
-
 import pjsua2 as pj
 from log import logger
 from phone_call import PhoneCall
@@ -69,7 +67,6 @@ class PhoneAccount(pj.Account):
         try:
             dest_uri = f"sip:{number}@{self.server}"
             SpeakerOn()
-            sleep(1)
             phone_call.play_out_ring()
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
