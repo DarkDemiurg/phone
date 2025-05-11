@@ -20,5 +20,5 @@ else:
     GPIO_SOCKET_PATH = "/var/run/gpio-server.socket"
     USE_THREADS = True
     VOIP_RUNTIME_DATA = "/var/run/voip_runtime_data.json"
-    RING_OUT = "/usr/share/sound/ringing.wav"
-    RING_IN = "/usr/share/sound/ring.wav"
+    RING_OUT = "sound/ringing.wav"
+    RING_IN = "sound/ring.wav"
