@@ -16,12 +16,12 @@ class PhoneCall(pj.Call):
         pj.Call.__init__(self, account, call_id)
         self.account = account
         self.connected = False
-        self.onhold = False
+        self.on_hold = False
         self.call_id = call_id
         self._muted = False
         self.delay = -1
         self.delayed = False
-        self.player: pj.AudioMediaPlayer = None
+        self.player: pj.AudioMediaPlayer | None = None
 
     def play_out_ring(self):
         try:
@@ -97,19 +97,24 @@ class PhoneCall(pj.Call):
                     m = self.getMedia(mi.index)
                     am = pj.AudioMedia.typecastFromMedia(m)
 
-                    self.account.app.ep.audDevManager().getCaptureDevMedia().startTransmit(
-                        am
+                    mic: pj.AudioMedia = (
+                        self.account.app.ep.audDevManager().getCaptureDevMedia()
                     )
+                    mic.adjustTxLevel(3.0)
+                    mic.startTransmit(am)
                     am.startTransmit(
                         self.account.app.ep.audDevManager().getPlaybackDevMedia()
                     )
 
-                    if mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD and not self.onhold:
-                        logger.info(f"[{self.peerUri}] sets call onhold")
-                        self.onhold = True
-                    elif mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE and self.onhold:
-                        logger.info(f"[{self.peerUri}] sets call active")
-                        self.onhold = False
+                    if (
+                        mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
+                        and not self.on_hold
+                    ):
+                        logger.info(f"[{self.call_id}] sets call on hold")
+                        self.on_hold = True
+                    elif mi.status == pj.PJSUA_CALL_MEDIA_ACTIVE and self.on_hold:
+                        logger.info(f"[{self.call_id}] sets call active")
+                        self.on_hold = False
         except Exception:
             logger.exception("Media error:")
 

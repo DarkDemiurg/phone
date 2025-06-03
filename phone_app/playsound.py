@@ -97,8 +97,9 @@ class PlaySound:
             # if speaker_off:
             #     SpeakerOff()
             LedOff()
-            self.process.terminate()
-            logger.info("Сигнал завершения отправлен")
+            if self.process is not None:
+                self.process.terminate()
+                logger.info("Сигнал завершения отправлен")
             return True
         except Exception as e:
             logger.error(f"Ошибка завершения: {str(e)}")
@@ -114,8 +115,9 @@ class PlaySound:
             # if speaker_off:
             #     SpeakerOff()
             LedOff()
-            self.process.kill()
-            logger.info("Процесс принудительно завершён")
+            if self.process is not None:
+                self.process.kill()
+                logger.info("Процесс принудительно завершён")
             os.system("killall -9 gplaysound")
             return True
         except Exception as e:

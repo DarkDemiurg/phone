@@ -27,7 +27,7 @@ class PhoneApp:
         # self.ring = PlaySound(
         #     args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
         # )
-        self.player: pj.AudioMediaPlayer = None
+        self.player: pj.AudioMediaPlayer | None = None
         self.__create_lib()
         self.__init_lib()
         self.__start_lib()
