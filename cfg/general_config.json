@@ -268,6 +268,87 @@
                     "STUNEnable": false,
                     "STUNPort": 3478,
                     "STUNServer": "stun.sipnet.ru"
+                },
+                "2": {
+                    "Codec": {
+                        "1": {
+                            "Enable": true,
+                            "Name": "G.711MuLaw"
+                        },
+                        "2": {
+                            "Enable": true,
+                            "Name": "G.711ALaw"
+                        },
+                        "3": {
+                            "Enable": true,
+                            "Name": "G.722"
+                        },
+                        "4": {
+                            "Enable": true,
+                            "Name": "OPUS"
+                        },
+                        "PacketizationPeriod": "20",
+                        "order": [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ]
+                    },
+                    "Enable": "Enabled",
+                    "Line": {
+                        "1": {
+                            "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
+                            "AutoAnswerEnable": true,
+                            "AutoAnswerTime": 5,
+                            "DirectoryNumber": "0036111",
+                            "Enable": "Enabled",
+                            "SIP": {
+                                "AuthPassword": "M_7nCCRVeE",
+                                "AuthUserName": "0036111"
+                            },
+                            "TriggersOutputLinks": {
+                                "1": "Device.Voip.TriggersOutput.1."
+                            }
+                        }
+                    },
+                    "NATFeatures": {
+                        "KeepAliveInterval": 60
+                    },
+                    "NATPublic": {
+                        "NATPublicEnable": false,
+                        "NATPublicIP": "0.0.0.0",
+                        "NATPublicPort": 5060
+                    },
+                    "RPortEnable": true,
+                    "RTP": {
+                        "DSCPMark": 0,
+                        "LocalPortMax": 9200,
+                        "LocalPortMin": 9100
+                    },
+                    "SIP": {
+                        "BackupOutboundPort": 5060,
+                        "BackupOutboundProxy": "",
+                        "BackupProxy": "",
+                        "BackupProxyPort": 5060,
+                        "BackupUserAgentPort": 5080,
+                        "DSCPMark": 0,
+                        "OutboundPort": 5060,
+                        "OutboundProxy": "",
+                        "ProxyServer": "sip.novofon.ru",
+                        "ProxyServerPort": 5061,
+                        "ProxyServerTransport": "UDP",
+                        "ReInviteExpires": 180,
+                        "RegisterExpires": 130,
+                        "SessionRefresher": "auto",
+                        "TLSPemFilePath": "",
+                        "UserAgent": "eXoVoIP",
+                        "UserAgentDomain": "",
+                        "UserAgentPort": 5060
+                    },
+                    "STUNEnable": false,
+                    "STUNPort": 3478,
+                    "STUNServer": "stun.sipnet.ru"
                 }
             }
         },

@@ -1,6 +1,6 @@
 import json
 from enum import StrEnum
-from typing import Optional
+from typing import Optional, TypedDict
 
 from const import GENERAL_CONFIG, OS_RELEASE
 
@@ -44,6 +44,11 @@ class TriggerInput:
 
     def __str__(self):
         return f"[{self.idx}] {self.pin_name=} {self.number=} {self.action=}"
+
+
+AccountData = TypedDict(
+    "AccountData", {"id": int, "username": str, "password": str, "server": str}
+)
 
 
 class Config:
@@ -146,3 +151,20 @@ class Config:
                 return ti.number.strip()
 
         return None
+
+    def get_accounts_data(self) -> list[AccountData]:
+        result: list[AccountData] = []
+
+        try:
+            for n, a in self._cfg["Device"]["Voip"]["VoiceProfile"].items():
+                username = a["Line"]["1"]["SIP"]["AuthUserName"]
+                password = a["Line"]["1"]["SIP"]["AuthPassword"]
+                server = a["SIP"]["ProxyServer"]
+                acc_data = AccountData(
+                    id=int(n), username=username, password=password, server=server
+                )
+                result.append(acc_data)
+        except Exception:
+            pass
+
+        return result
