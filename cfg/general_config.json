@@ -220,7 +220,7 @@
                             "AudioInterfaceLink": "Device.Voip.AudioInterfaces.1.",
                             "AutoAnswerEnable": true,
                             "AutoAnswerTime": 5,
-                            "DirectoryNumber": "5000",
+                            "DirectoryNumber": "0036109",
                             "Enable": "Enabled",
                             "SIP": {
                                 "AuthPassword": "_hume4yNkK",
@@ -255,7 +255,7 @@
                         "OutboundPort": 5060,
                         "OutboundProxy": "",
                         "ProxyServer": "sip.novofon.ru",
-                        "ProxyServerPort": 5060,
+                        "ProxyServerPort": 5061,
                         "ProxyServerTransport": "UDP",
                         "ReInviteExpires": 180,
                         "RegisterExpires": 130,
