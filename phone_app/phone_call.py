@@ -23,6 +23,9 @@ class PhoneCall(pj.Call):
         self.delayed = False
         self.player: pj.AudioMediaPlayer | None = None
 
+    def onDtmfDigit(self, prm: pj.OnDtmfDigitParam):
+        logger.info(f"DTMF DIGIT: {prm.digit}")
+
     def play_out_ring(self):
         try:
             if self.player is None:
