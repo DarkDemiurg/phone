@@ -38,6 +38,7 @@ class Statistics:
                                 "CallStatus": "Idle",
                                 "RegisterStatus": "Unknown",
                                 "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
                             }
                         }
                     }
@@ -75,4 +76,8 @@ class Statistics:
         self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
             "RegisterStatus"
         ] = register_status.value
+        self.__update()
+
+    def set_call_codec(self, codec: str):
+        self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"]["Codec"] = codec
         self.__update()
