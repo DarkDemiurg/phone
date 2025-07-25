@@ -32,6 +32,8 @@ class PhoneApp:
         self.__init_lib()
         self.__start_lib()
 
+        self.__set_codec_priorities()
+
         self.__create_accounts()
 
     def __create_lib(self):
@@ -52,6 +54,27 @@ class PhoneApp:
         self.gpio_client.shutdown()
         self.ep.libDestroy()
         self.stop_in_ring()  # self.ring.kill()
+
+    def __set_codec_priorities(self):
+        ep = pj.Endpoint.instance()
+
+        # Желаемый порядок приоритетов (255 - наивысший)
+        priority_map = {
+            "PCMA/8000/1": 250,
+            "PCMU/8000/1": 251,
+            "G722/16000/1": 252,
+            "G7221/16000/1": 253,
+            "G7221/32000/1": 254,
+            "opus/48000/2": 255,
+        }
+
+        # Установка приоритетов
+        for codec_id, priority in priority_map.items():
+            try:
+                ep.codecSetPriority(codec_id, priority)
+                logger.debug(f"Set {codec_id} priority: {priority}")
+            except:  # noqa
+                logger.exception(f"Codec not found: {codec_id}")
 
     def __create_media_config(self):
         self.med_cfg = pj.MediaConfig()

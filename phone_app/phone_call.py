@@ -100,6 +100,11 @@ class PhoneCall(pj.Call):
                     m = self.getMedia(mi.index)
                     am = pj.AudioMedia.typecastFromMedia(m)
 
+                    info = self.getStreamInfo(mi.index)
+                    codec = f"{info.codecName}/{info.codecClockRate}"
+
+                    logger.debug(f"Codec: {codec}")
+
                     mic: pj.AudioMedia = (
                         self.account.app.ep.audDevManager().getCaptureDevMedia()
                     )
