@@ -47,8 +47,9 @@ class PhoneApp:
         self.ep.libStart()
 
     def __destroy(self):
-        self.stat.set_call_status(CallStatus.Unknown)
-        self.stat.set_register_status(RegisterStatus.Unknown)
+        for acc in self.accounts:
+            self.stat.set_call_status(acc.id, CallStatus.Unknown)
+            self.stat.set_register_status(acc.id, RegisterStatus.Unknown)
         self.gpio_client.shutdown()
         self.ep.libDestroy()
         self.stop_in_ring()  # self.ring.kill()
@@ -96,7 +97,7 @@ class PhoneApp:
         self.accounts: list[PhoneAccount] = []
         account_data: list[AccountData] = self.cfg.get_accounts_data()
         for d in account_data:
-            acc = PhoneAccount(self, d["username"], d["password"], d["server"])
+            acc = PhoneAccount(self, d["id"], d["username"], d["password"], d["server"])
             self.accounts.append(acc)
 
     def play_in_ring(self):

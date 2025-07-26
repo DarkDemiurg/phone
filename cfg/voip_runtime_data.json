@@ -6,29 +6,8 @@
                     "Line": {
                         "1": {
                             "CallStatus": "Idle",
-                            "RegisterStatus": "Unregistered",
-                            "BackupRegisterStatus": "Unknown",
-                            "Codec": ""
-                        }
-                    }
-                },
-                "2": {
-                    "Line": {
-                        "1": {
-                            "CallStatus": "Idle",
-                            "RegisterStatus": "Unregistered",
-                            "BackupRegisterStatus": "Unknown",
-                            "Codec": ""
-                        }
-                    }
-                },
-                "3": {
-                    "Line": {
-                        "1": {
-                            "CallStatus": "Idle",
-                            "RegisterStatus": "Unregistered",
-                            "BackupRegisterStatus": "Unknown",
-                            "Codec": ""
+                            "RegisterStatus": "Unknown",
+                            "BackupRegisterStatus": "Unknown"
                         }
                     }
                 }
