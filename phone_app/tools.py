@@ -157,13 +157,15 @@ class Config:
 
         try:
             for n, a in self._cfg["Device"]["Voip"]["VoiceProfile"].items():
-                username = a["Line"]["1"]["SIP"]["AuthUserName"]
-                password = a["Line"]["1"]["SIP"]["AuthPassword"]
-                server = a["SIP"]["ProxyServer"]
-                acc_data = AccountData(
-                    id=int(n), username=username, password=password, server=server
-                )
-                result.append(acc_data)
+                enable = a["Enable"]
+                if enable == "Enabled":
+                    username = a["Line"]["1"]["SIP"]["AuthUserName"]
+                    password = a["Line"]["1"]["SIP"]["AuthPassword"]
+                    server = a["SIP"]["ProxyServer"]
+                    acc_data = AccountData(
+                        id=int(n), username=username, password=password, server=server
+                    )
+                    result.append(acc_data)
         except Exception:
             pass
 
