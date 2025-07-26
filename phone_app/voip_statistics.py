@@ -38,6 +38,7 @@ class Statistics:
                                 "CallStatus": "Idle",
                                 "RegisterStatus": "Unknown",
                                 "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
                             }
                         }
                     },
@@ -47,6 +48,7 @@ class Statistics:
                                 "CallStatus": "Idle",
                                 "RegisterStatus": "Unknown",
                                 "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
                             }
                         }
                     },
@@ -56,6 +58,7 @@ class Statistics:
                                 "CallStatus": "Idle",
                                 "RegisterStatus": "Unknown",
                                 "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
                             }
                         }
                     },
