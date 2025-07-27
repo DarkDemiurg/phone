@@ -3,8 +3,6 @@ from const import RING_OUT
 from log import logger
 from voip_statistics import CallStatus
 
-from phone_app.speaker import SpeakerOn
-
 ROLE_STR = {
     pj.PJSIP_ROLE_UAC: "outgoing",
     pj.PJSIP_ROLE_UAS: "incoming",
@@ -105,8 +103,6 @@ class PhoneCall(pj.Call):
                     info = self.getStreamInfo(mi.index)
                     codec = f"{info.codecName}/{info.codecClockRate}"
                     self.account.app.stat.set_call_codec(self.account.id, codec)
-
-                    SpeakerOn()
 
                     mic: pj.AudioMedia = (
                         self.account.app.ep.audDevManager().getCaptureDevMedia()
