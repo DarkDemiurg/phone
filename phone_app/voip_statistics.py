@@ -98,6 +98,8 @@ class Statistics:
         ] = register_status.value
         self.__update()
 
-    def set_call_codec(self, codec: str):
-        self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"]["Codec"] = codec
+    def set_call_codec(self, acc: int, codec: str):
+        self._cfg["Device"]["Voip"]["VoiceProfile"][str(acc)]["Line"]["1"]["Codec"] = (
+            codec
+        )
         self.__update()

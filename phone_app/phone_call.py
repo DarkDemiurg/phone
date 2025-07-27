@@ -105,7 +105,7 @@ class PhoneCall(pj.Call):
 
                     logger.debug(f"Codec: {codec}")
 
-                    self.account.app.stat.set_call_codec(codec)
+                    self.account.app.stat.set_call_codec(self.account.id, codec)
 
                     mic: pj.AudioMedia = (
                         self.account.app.ep.audDevManager().getCaptureDevMedia()
