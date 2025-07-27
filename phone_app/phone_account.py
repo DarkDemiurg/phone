@@ -6,9 +6,12 @@ from voip_statistics import CallStatus, RegisterStatus
 
 
 class PhoneAccount(pj.Account):
-    def __init__(self, app, username: str, password: str, server: str, *args, **kwargs):
+    def __init__(
+        self, app, id: int, username: str, password: str, server: str, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.app = app
+        self.id = id
         self.username = username
         self.password = password
         self.server = server
@@ -26,7 +29,7 @@ class PhoneAccount(pj.Account):
         self.cfg.sipConfig.authCreds.append(cred)
 
         self.create(self.cfg)
-        self.app.stat.set_register_status(RegisterStatus.Registering)
+        self.app.stat.set_register_status(self.id, RegisterStatus.Registering)
 
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
@@ -54,9 +57,9 @@ class PhoneAccount(pj.Account):
         logger.info(f"[{ai.uri}]: reg status = {ai.regStatus} {ai.regStatusText}")
 
         if ai.regStatus == 200:
-            self.app.stat.set_register_status(RegisterStatus.Registered)
+            self.app.stat.set_register_status(self.id, RegisterStatus.Registered)
         else:
-            self.app.stat.set_register_status(RegisterStatus.RegisterError)
+            self.app.stat.set_register_status(self.id, RegisterStatus.RegisterError)
 
         return super().onRegState(reg_prm)
 
@@ -70,7 +73,7 @@ class PhoneAccount(pj.Account):
             phone_call.play_out_ring()
             phone_call.makeCall(dest_uri, prm)
             self.add_call(phone_call)
-            self.app.stat.set_call_status(CallStatus.Calling)
+            self.app.stat.set_call_status(self.id, CallStatus.Calling)
             logger.info(f"New outgoing call to: {dest_uri}")
         except pj.Error as pjerr:
             logger.error(pjerr.info())

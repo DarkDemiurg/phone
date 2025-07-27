@@ -12,7 +12,7 @@ from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
 from speaker import SpeakerOn
-from tools import Action, Config, get_user_agent
+from tools import AccountData, Action, Config, get_user_agent
 from voip_statistics import CallStatus, RegisterStatus, Statistics
 
 
@@ -22,8 +22,8 @@ class PhoneApp:
         atexit.register(self.__destroy)
 
     def __init(self):
-        self.cfg = Config()
         self.stat = Statistics()
+        self.cfg = Config()
         # self.ring = PlaySound(
         #     args=["-f", "/usr/share/sound/ring.mp3", "-d", "pcm_int", "-r", "30"]
         # )
@@ -49,8 +49,9 @@ class PhoneApp:
         self.ep.libStart()
 
     def __destroy(self):
-        self.stat.set_call_status(CallStatus.Unknown)
-        self.stat.set_register_status(RegisterStatus.Unknown)
+        for acc in self.accounts:
+            self.stat.set_call_status(acc.id, CallStatus.Unknown)
+            self.stat.set_register_status(acc.id, RegisterStatus.Unknown)
         self.gpio_client.shutdown()
         self.ep.libDestroy()
         self.stop_in_ring()  # self.ring.kill()
@@ -117,8 +118,10 @@ class PhoneApp:
 
     def __create_accounts(self):
         self.accounts: list[PhoneAccount] = []
-        acc = PhoneAccount(self, self.cfg.username, self.cfg.password, self.cfg.server)
-        self.accounts.append(acc)
+        account_data: list[AccountData] = self.cfg.get_accounts_data()
+        for d in account_data:
+            acc = PhoneAccount(self, d["id"], d["username"], d["password"], d["server"])
+            self.accounts.append(acc)
 
     def play_in_ring(self):
         try:

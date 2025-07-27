@@ -77,13 +77,13 @@ class PhoneCall(pj.Call):
             if ci.state == pj.PJSIP_INV_STATE_CONNECTING:  # After 2xx is sent/received.
                 pass
             if ci.state == pj.PJSIP_INV_STATE_CONFIRMED:  # After ACK is sent/received.
-                self.account.app.stat.set_call_status(CallStatus.Busy)
+                self.account.app.stat.set_call_status(self.account.id, CallStatus.Busy)
                 self.account.app.stop_in_ring()  # self.account.app.ring.kill(speaker_off=False)
                 self.stop_out_ring()
 
             if ci.state == pj.PJSIP_INV_STATE_DISCONNECTED:  # Session is terminated.
                 self.account.remove_call(self)
-                self.account.app.stat.set_call_status(CallStatus.Idle)
+                self.account.app.stat.set_call_status(self.account.id, CallStatus.Idle)
                 self.account.app.stop_in_ring()  # self.account.app.ring.kill()
                 self.stop_out_ring()
         except Exception as e:
@@ -177,7 +177,7 @@ class PhoneCall(pj.Call):
             op: pj.CallOpParam = pj.CallOpParam()
             op.statusCode = pj.PJSIP_SC_RINGING
             super().answer(op)
-            self.account.app.stat.set_call_status(CallStatus.Ringing)
+            self.account.app.stat.set_call_status(self.account.id, CallStatus.Ringing)
         except Exception as e:
             logger.error(f"[{self.call_id}] Call terminate error: {str(e)}")
 
@@ -190,7 +190,7 @@ class PhoneCall(pj.Call):
             )
             self.delayed = True
             self.delay = auto_answer_time
-            self.account.app.stat.set_call_status(CallStatus.Ringing)
+            self.account.app.stat.set_call_status(self.account.id, CallStatus.Ringing)
         except Exception as e:
             logger.error(f"[{self.call_id}] Auto answer error: {str(e)}")
 

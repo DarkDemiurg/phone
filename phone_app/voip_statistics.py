@@ -41,7 +41,27 @@ class Statistics:
                                 "Codec": "",
                             }
                         }
-                    }
+                    },
+                    "2": {
+                        "Line": {
+                            "1": {
+                                "CallStatus": "Idle",
+                                "RegisterStatus": "Unknown",
+                                "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
+                            }
+                        }
+                    },
+                    "3": {
+                        "Line": {
+                            "1": {
+                                "CallStatus": "Idle",
+                                "RegisterStatus": "Unknown",
+                                "BackupRegisterStatus": "Unknown",
+                                "Codec": "",
+                            }
+                        }
+                    },
                 }
             }
         }
@@ -66,14 +86,14 @@ class Statistics:
         except Exception:
             logger.exception("Update statistics error:")
 
-    def set_call_status(self, call_status: CallStatus):
-        self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"]["CallStatus"] = (
-            call_status.value
-        )
+    def set_call_status(self, acc: int, call_status: CallStatus):
+        self._cfg["Device"]["Voip"]["VoiceProfile"][str(acc)]["Line"]["1"][
+            "CallStatus"
+        ] = call_status.value
         self.__update()
 
-    def set_register_status(self, register_status: RegisterStatus):
-        self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
+    def set_register_status(self, acc: int, register_status: RegisterStatus):
+        self._cfg["Device"]["Voip"]["VoiceProfile"][str(acc)]["Line"]["1"][
             "RegisterStatus"
         ] = register_status.value
         self.__update()
