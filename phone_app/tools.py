@@ -90,22 +90,6 @@ class Config:
     def gpio_server_socket(self) -> str:
         return self._cfg["Device"]["Voip"]["GPIOServerSocket"]  # noqa
 
-    @property  # +
-    def server(self) -> str:
-        return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["SIP"]["ProxyServer"]
-
-    @property  # +
-    def username(self) -> str:
-        return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"]["SIP"][
-            "AuthUserName"
-        ]
-
-    @property  # +
-    def password(self) -> str:
-        return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"]["SIP"][
-            "AuthPassword"
-        ]
-
     @property
     def voice_pin_name(self) -> str:
         return self._cfg["Device"]["Voip"]["AudioInterfaces"]["1"]["VoicePinName"]
