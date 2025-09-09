@@ -104,14 +104,21 @@ class PhoneCall(pj.Call):
                     codec = f"{info.codecName}/{info.codecClockRate}"
                     self.account.app.stat.set_call_codec(self.account.id, codec)
 
-                    mic: pj.AudioMedia = (
-                        self.account.app.ep.audDevManager().getCaptureDevMedia()
-                    )
-                    mic.adjustTxLevel(3.0)
-                    mic.startTransmit(am)
-                    am.startTransmit(
-                        self.account.app.ep.audDevManager().getPlaybackDevMedia()
-                    )
+                    try:
+                        mic: pj.AudioMedia = (
+                            self.account.app.ep.audDevManager().getCaptureDevMedia()
+                        )
+                        mic.adjustTxLevel(3.0)
+                        mic.startTransmit(am)
+                    except Exception:
+                        logger.exception("MIC transmit error:")
+
+                    try:
+                        am.startTransmit(
+                            self.account.app.ep.audDevManager().getPlaybackDevMedia()
+                        )
+                    except Exception:
+                        logger.exception("Speaker transmit error:")
 
                     if (
                         mi.status == pj.PJSUA_CALL_MEDIA_REMOTE_HOLD
