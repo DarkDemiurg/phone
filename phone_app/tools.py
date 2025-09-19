@@ -47,7 +47,15 @@ class TriggerInput:
 
 
 AccountData = TypedDict(
-    "AccountData", {"id": int, "username": str, "password": str, "server": str}
+    "AccountData",
+    {
+        "id": int,
+        "username": str,
+        "password": str,
+        "server": str,
+        "auto_answer_enabled": bool,
+        "auto_answer_time": int,
+    },
 )
 
 
@@ -101,18 +109,6 @@ class Config:
         ]
 
     @property  # +
-    def auto_answer_enabled(self) -> bool:
-        return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
-            "AutoAnswerEnable"
-        ]
-
-    @property  # +
-    def auto_answer_time(self) -> int:
-        return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["Line"]["1"][
-            "AutoAnswerTime"
-        ]
-
-    @property  # +
     def proxy_server_port(self) -> int:
         return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["SIP"][
             "ProxyServerPort"
@@ -146,8 +142,15 @@ class Config:
                     username = a["Line"]["1"]["SIP"]["AuthUserName"]
                     password = a["Line"]["1"]["SIP"]["AuthPassword"]
                     server = a["SIP"]["ProxyServer"]
+                    auto_answer_enabled = a["Line"]["1"]["AutoAnswerEnable"]
+                    auto_answer_time = a["Line"]["1"]["AutoAnswerTime"]
                     acc_data = AccountData(
-                        id=int(n), username=username, password=password, server=server
+                        id=int(n),
+                        username=username,
+                        password=password,
+                        server=server,
+                        auto_answer_enabled=bool(auto_answer_enabled),
+                        auto_answer_time=int(auto_answer_time),
                     )
                     result.append(acc_data)
         except Exception:

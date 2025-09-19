@@ -120,7 +120,15 @@ class PhoneApp:
         self.accounts: list[PhoneAccount] = []
         account_data: list[AccountData] = self.cfg.get_accounts_data()
         for d in account_data:
-            acc = PhoneAccount(self, d["id"], d["username"], d["password"], d["server"])
+            acc = PhoneAccount(
+                self,
+                d["id"],
+                d["username"],
+                d["password"],
+                d["server"],
+                d["auto_answer_enabled"],
+                d["auto_answer_time"],
+            )
             self.accounts.append(acc)
 
     def play_in_ring(self):

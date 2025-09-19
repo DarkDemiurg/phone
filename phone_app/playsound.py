@@ -21,7 +21,7 @@ class PlaySound:
         self._output_threads: list = []
 
     def start(self):
-        """Запуск внешнего процесса"""
+        """Запуск внешнего процесса."""
         if self.is_running():
             logger.warning("Процесс уже запущен")
             return False
@@ -56,7 +56,7 @@ class PlaySound:
             return False
 
     def _start_output_thread(self, stream_name):
-        """Запуск потока для чтения вывода"""
+        """Запуск потока для чтения вывода."""
 
         def reader():
             stream = getattr(self.process, stream_name)
@@ -69,7 +69,7 @@ class PlaySound:
         self._output_threads.append(thread)
 
     def get_output(self, timeout=0.1):
-        """Получение накопленного вывода"""
+        """Получение накопленного вывода."""
         outputs = {"stdout": [], "stderr": []}
         while True:
             try:
@@ -80,7 +80,7 @@ class PlaySound:
         return outputs
 
     def get_output_lines(self):
-        """Генератор для получения вывода в реальном времени"""
+        """Генератор для получения вывода в реальном времени."""
         while self.is_running() or not self.output_queue.empty():
             try:
                 yield self.output_queue.get_nowait()
@@ -88,7 +88,7 @@ class PlaySound:
                 pass
 
     def terminate(self, speaker_off=True):
-        """Корректное завершение процесса"""
+        """Корректное завершение процесса."""
         if not self.is_running():
             logger.warning("Процесс не запущен")
             return False
@@ -106,7 +106,7 @@ class PlaySound:
             return False
 
     def kill(self, speaker_off=True):
-        """Принудительное завершение процесса"""
+        """Принудительное завершение процесса."""
         if not self.is_running():
             logger.warning("Процесс не запущен")
             return False
@@ -125,11 +125,11 @@ class PlaySound:
             return False
 
     def is_running(self):
-        """Проверка активности процесса"""
+        """Проверка активности процесса."""
         return self.process and (self.process.poll() is None)
 
     def wait(self, timeout=None):
-        """Ожидание завершения процесса"""
+        """Ожидание завершения процесса."""
         if not self.process:
             return False
         try:

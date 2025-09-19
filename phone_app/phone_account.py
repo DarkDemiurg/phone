@@ -7,7 +7,16 @@ from voip_statistics import CallStatus, RegisterStatus
 
 class PhoneAccount(pj.Account):
     def __init__(
-        self, app, id: int, username: str, password: str, server: str, *args, **kwargs
+        self,
+        app,
+        id: int,
+        username: str,
+        password: str,
+        server: str,
+        auto_answer_enabled: bool,
+        auto_answer_time: int,
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.app = app
@@ -15,6 +24,8 @@ class PhoneAccount(pj.Account):
         self.username = username
         self.password = password
         self.server = server
+        self.auto_answer_enabled = auto_answer_enabled
+        self.auto_answer_time = auto_answer_time
         self.calls: list[PhoneCall] = []
         self.__create()
 
@@ -34,10 +45,10 @@ class PhoneAccount(pj.Account):
     def onIncomingCall(self, call_prm: pj.OnIncomingCallParam):
         phone_call: PhoneCall = PhoneCall(account=self, call_id=call_prm.callId)
         logger.info("New incoming call")
-        if self.app.cfg.auto_answer_enabled:
-            if self.app.cfg.auto_answer_time > 0:
+        if self.auto_answer_enabled:
+            if self.auto_answer_time > 0:
                 self.app.play_in_ring()  # self.app.ring.start()
-                phone_call.AutoAnswer(self.app.cfg.auto_answer_time)
+                phone_call.AutoAnswer(self.auto_answer_time)
             else:
                 phone_call.Accept()
         else:
