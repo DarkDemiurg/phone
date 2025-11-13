@@ -64,8 +64,8 @@ class PhoneApp:
             "PCMA/8000/1": 250,
             "PCMU/8000/1": 251,
             "G722/16000/1": 252,
-            "G7221/16000/1": 253,
-            "G7221/32000/1": 254,
+            # "G7221/16000/1": 253,
+            # "G7221/32000/1": 254,
             "opus/48000/2": 255,
         }
 
@@ -82,6 +82,8 @@ class PhoneApp:
         self.med_cfg.ecOptions = (
             pj.PJMEDIA_ECHO_WEBRTC_AEC3 | pj.PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR
         )
+        # self.med_cfg.sndClockRate = 48000
+        self.med_cfg.channelCount = 2
         self.ep_cfg.medConfig = self.med_cfg
 
     def __create_ua_config(self):
