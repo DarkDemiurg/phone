@@ -59,6 +59,14 @@ AccountData = TypedDict(
 )
 
 
+def pjsip2dev_vol(vol: float) -> int:
+    return int(vol * 100.0 / 2)
+
+
+def dev2pjsip_vol(vol: int) -> float:
+    return vol * 2 / 100.0
+
+
 class Config:
     _instance = None
     _cfg: dict = {}
@@ -90,13 +98,34 @@ class Config:
         with open(GENERAL_CONFIG) as f:
             self._cfg = json.load(f)
         self._load_triggers_input()
+        self._volume_in = self.audio_input_volume
 
     def reload_config(self):
         self._load_config()
 
-    @property  # +
+    @property
+    def volume_in(self):
+        return self._volume_in
+
+    @volume_in.setter
+    def volume_in(self, value):
+        self._volume_in = value
+
+    @property
+    def audio_input_volume(self) -> int:
+        return int(self._cfg["Device"]["Audio"]["Input"]["1"]["Volume"])
+
+    @property
+    def audio_output_volume(self) -> int:
+        return int(self._cfg["Device"]["Audio"]["Output"]["1"]["Volume"])
+
+    @property
     def gpio_server_socket(self) -> str:
         return self._cfg["Device"]["Voip"]["GPIOServerSocket"]  # noqa
+
+    @property
+    def phone_server_socket(self) -> str:
+        return self._cfg["Device"]["Voip"]["PhoneServerSocket"]  # noqa
 
     @property
     def voice_pin_name(self) -> str:
@@ -108,13 +137,13 @@ class Config:
             "RegisterExpires"
         ]
 
-    @property  # +
+    @property
     def proxy_server_port(self) -> int:
         return self._cfg["Device"]["Voip"]["VoiceProfile"]["1"]["SIP"][
             "ProxyServerPort"
         ]
 
-    @property  # +
+    @property
     def triggers_input(self) -> list[TriggerInput]:
         return self._triggers_input
 

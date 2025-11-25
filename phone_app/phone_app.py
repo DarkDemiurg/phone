@@ -6,13 +6,13 @@ from threading import Thread
 from time import sleep
 
 import pjsua2 as pj  # type: ignore
-from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, RING_IN
+from const import GPIO_SOCKET_PATH, HOST, LOG_LEVEL, PHONE_SOCKET_PATH, RING_IN
 from gpio_client import GpioClient
 from log import logger
 from phone_account import PhoneAccount
 from phone_call import PhoneCall
 from speaker import SpeakerOn
-from tools import AccountData, Action, Config, get_user_agent
+from tools import AccountData, Action, Config, dev2pjsip_vol, get_user_agent
 from voip_statistics import CallStatus, RegisterStatus, Statistics
 
 
@@ -163,19 +163,23 @@ class PhoneApp:
         self.__choose_account(number).make_call(number)
 
     def __choose_account(self, number: str) -> PhoneAccount:
-        return self.accounts[0]  # TODO: implement stub for multiple accounts
+        return self.accounts[0]
 
     def run(self):
         t = Thread(target=self.timer_thread, args=[])
         t.start()
 
         if HOST:
-            socket_path = GPIO_SOCKET_PATH
+            gpio_socket_path = GPIO_SOCKET_PATH
+            phone_socket_path = PHONE_SOCKET_PATH
         else:
-            socket_path = self.cfg.gpio_server_socket
+            gpio_socket_path = self.cfg.gpio_server_socket
+            phone_socket_path = self.cfg.phone_server_socket
 
         self.gpio_client = GpioClient()
-        self.gpio_client.serve_forever(socket_path, self.pin_callback)
+        self.gpio_client.serve_forever(
+            gpio_socket_path, self.pin_callback, phone_socket_path, self.config_callback
+        )
 
     def print_audio_devs(self):
         for d in self.ep.audDevManager().enumDev2():
@@ -188,6 +192,25 @@ class PhoneApp:
 
         if action is not None:
             self.process_pin_action(pin_name, action)
+
+    def adjustTxLevel(self) -> None:
+        try:
+            mic: pj.AudioMedia = self.ep.audDevManager().getCaptureDevMedia()
+            new_pjsip_mic_volume = dev2pjsip_vol(self.cfg.volume_in)
+            mic.adjustTxLevel(new_pjsip_mic_volume)
+            logger.debug(f"Mic volume adjusted: {new_pjsip_mic_volume}")
+        except Exception:
+            logger.exception("Adjust Mic error")
+
+    def config_callback(self, param: str, val: str) -> None:
+        logger.debug(f"Config handled: {param}={val}")
+        try:
+            if param == "audio_input_volume":
+                new_volume_in = int(val)
+                self.cfg.volume_in = new_volume_in
+                self.adjustTxLevel()
+        except Exception:
+            logger.exception("Change volume_in error")
 
     def process_pin_action(self, pin_name: str, action: Action) -> None:
         try:

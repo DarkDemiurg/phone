@@ -13,6 +13,7 @@ if HOST:
     VOIP_RUNTIME_DATA = "/tmp/etc/voip_runtime_data.json"
     LOG_LEVEL = 2
     GPIO_SOCKET_PATH = "/tmp/gpio-server.socket"
+    PHONE_SOCKET_PATH = "/tmp/phone-server.socket"
     USE_THREADS = True
     RING_OUT = "sound/ringing.wav"
     RING_IN = "sound/ring.wav"
@@ -23,6 +24,7 @@ else:
     VOIP_RUNTIME_DATA = "/var/run/voip_runtime_data.json"
     LOG_LEVEL = 3
     GPIO_SOCKET_PATH = "/var/run/gpio-server.socket"
+    PHONE_SOCKET_PATH = "/var/run/phone-server.socket"
     USE_THREADS = True
     RING_OUT = "/opt/phone_app/sound/ringing.wav"
     RING_IN = "/opt/phone_app/sound/ring.wav"
