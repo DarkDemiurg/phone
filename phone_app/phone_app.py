@@ -171,14 +171,12 @@ class PhoneApp:
 
         if HOST:
             gpio_socket_path = GPIO_SOCKET_PATH
-            phone_socket_path = PHONE_SOCKET_PATH
         else:
             gpio_socket_path = self.cfg.gpio_server_socket
-            phone_socket_path = self.cfg.phone_server_socket
 
         self.gpio_client = GpioClient()
         self.gpio_client.serve_forever(
-            gpio_socket_path, self.pin_callback, phone_socket_path, self.config_callback
+            gpio_socket_path, self.pin_callback, PHONE_SOCKET_PATH, self.config_callback
         )
 
     def print_audio_devs(self):
