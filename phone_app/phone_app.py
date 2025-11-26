@@ -205,7 +205,7 @@ class PhoneApp:
     def config_callback(self, param: str, val: str) -> None:
         logger.debug(f"Config handled: {param}={val}")
         try:
-            if param == "audio_input_volume":
+            if param == "audio_input_1_volume":
                 new_volume_in = int(val)
                 self.cfg.volume_in = new_volume_in
                 self.adjustTxLevel()
