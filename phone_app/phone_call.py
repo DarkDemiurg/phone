@@ -108,7 +108,7 @@ class PhoneCall(pj.Call):
                         mic: pj.AudioMedia = (
                             self.account.app.ep.audDevManager().getCaptureDevMedia()
                         )
-                        mic.adjustTxLevel(self.account.app.cfg.volume_in)
+                        self.account.app.adjustTxLevel()
                         mic.startTransmit(am)
                     except Exception:
                         logger.exception("MIC transmit error:")
