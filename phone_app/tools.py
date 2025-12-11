@@ -113,7 +113,10 @@ class Config:
 
     @property
     def audio_input_volume(self) -> int:
-        return int(self._cfg["Device"]["Audio"]["Input"]["1"]["Volume"])
+        if "Input" in self._cfg["Device"]["Audio"]:
+            return int(self._cfg["Device"]["Audio"]["Input"]["1"]["Volume"])
+
+        return 50
 
     @property
     def audio_output_volume(self) -> int:
